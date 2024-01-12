@@ -1,8 +1,8 @@
-CREATE TABLE IF NOT EXISTS url (
+CREATE TABLE IF NOT EXISTS link (
 	id BIGSERIAL PRIMARY KEY,
-	short_url varchar NOT NULL UNIQUE,
-	original_url varchar NOT NULL,
-	created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+	short_url varchar(8) NOT NULL UNIQUE,
+	original_url varchar(2048) NOT NULL,
+	created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	expired_at timestamp NOT NULL,
-	visit_count bigint DEFAULT 0
+	visit_count bigint NOT NULL DEFAULT 0
 );
