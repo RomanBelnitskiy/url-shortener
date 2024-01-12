@@ -15,4 +15,4 @@
 >  
 >  Also, add a VM launch parameter -Dspring.profiles.active=prod as shown at image below.
 >  
-> ![VM option](src/main/resources/images/prod-conf.png "VM option")
+> ![VM option](https://github.com/RomanBelnitskiy/url-shortener/blob/props/src/main/resources/images/prod-conf.png "VM option")
