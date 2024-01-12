@@ -14,27 +14,26 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "link")
 public class LinkEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "short_link")
     @NonNull
-    String shortLink;
+    private String shortLink;
 
     @Column(name = "long_link")
     @NonNull
-    String longLink;
+    private String longLink;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    LocalDateTime createAt = LocalDateTime.now();
+    private LocalDateTime createAt = LocalDateTime.now();
 
     @CreatedDate
     @Column(name = "expired_at", nullable = false)
-    LocalDateTime expiredAt = LocalDateTime.now();
+    private LocalDateTime expiredAt = LocalDateTime.now();
 
     @Column
-    Integer transitions;
+    private Integer transitions;
 }
