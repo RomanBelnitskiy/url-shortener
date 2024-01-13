@@ -3,6 +3,7 @@ package com.example.urlshortener.data.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
 @Table(name = "link")
 public class LinkEntity {
     @Id
@@ -32,6 +34,11 @@ public class LinkEntity {
     @Column(name = "visit_count")
     private long transitions;
 
-    public LinkEntity() {
+    public LinkEntity(String shortLink, String longLink, LocalDateTime createAt, LocalDateTime expiredAt, long transitions) {
+        this.shortLink = shortLink;
+        this.longLink = longLink;
+        this.createAt = createAt;
+        this.expiredAt = expiredAt;
+        this.transitions = transitions;
     }
 }
