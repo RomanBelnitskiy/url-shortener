@@ -13,9 +13,6 @@ import java.time.LocalDateTime;
 @Table(name = "link")
 public class LinkEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     @Column(name = "short_url")
     @NonNull
     private String shortLink;
@@ -34,4 +31,7 @@ public class LinkEntity {
 
     @Column(name = "visit_count")
     private long transitions;
+
+    public LinkEntity() {
+    }
 }
