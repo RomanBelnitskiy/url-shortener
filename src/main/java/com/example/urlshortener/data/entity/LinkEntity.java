@@ -21,7 +21,7 @@ public class LinkEntity {
     @NonNull
     String shortLink;
 
-    @Column(name = "original_link")
+    @Column(name = "original_url")
     @NonNull
     String longLink;
 
@@ -34,5 +34,6 @@ public class LinkEntity {
     LocalDateTime expiredAt = LocalDateTime.now();
 
     @Column(name = "visit_count")
-    Integer transitions;
+    Long transitions;
+
 }
