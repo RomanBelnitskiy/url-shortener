@@ -17,6 +17,7 @@ public class LinkMapper {
                 .shortLink(link.getShortLink())
                 .createdAt(link.getCreateAt())
                 .expiredAt(link.getExpiredAt())
+                .transitions(link.getTransitions())
                 .build();
     }
 
