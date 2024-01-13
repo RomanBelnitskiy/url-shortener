@@ -15,6 +15,8 @@ public class LinkMapper {
         return LinkDto.builder()
                 .longLink(link.getLongLink())
                 .shortLink(link.getShortLink())
+                .createdAt(link.getCreateAt())
+                .expiredAt(link.getExpiredAt())
                 .build();
     }
 
