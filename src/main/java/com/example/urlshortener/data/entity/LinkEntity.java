@@ -15,25 +15,24 @@ import java.time.LocalDateTime;
 public class LinkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private long id;
 
     @Column(name = "short_url")
     @NonNull
-    String shortLink;
+    private String shortLink;
 
     @Column(name = "original_url")
     @NonNull
-    String longLink;
+    private String longLink;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    LocalDateTime createAt = LocalDateTime.now();
+    private LocalDateTime createAt = LocalDateTime.now();
 
     @CreatedDate
     @Column(name = "expired_at", nullable = false)
-    LocalDateTime expiredAt = LocalDateTime.now();
+    private LocalDateTime expiredAt = LocalDateTime.now();
 
     @Column(name = "visit_count")
-    Long transitions;
-
+    private long transitions;
 }

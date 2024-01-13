@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LinkDto {
-    private Long id;
+    private long id;
     private String shortLink;
     private String longLink;
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
-    private Integer transitions;
+    private long transitions;
 }
