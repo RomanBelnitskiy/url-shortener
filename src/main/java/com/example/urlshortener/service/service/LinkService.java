@@ -5,8 +5,8 @@ import com.example.urlshortener.service.dto.LinkDto;
 import java.util.List;
 
 public interface LinkService {
-    List<LinkDto> listAll();
-    LinkDto add(LinkDto dto);
+    List<LinkDto> findAll();
+    LinkDto create(LinkDto dto);
     void deleteById(Long id);
     void update(LinkDto note);
     LinkDto getById(Long id);
