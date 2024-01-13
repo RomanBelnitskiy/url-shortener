@@ -1,28 +1,25 @@
 package com.example.urlshortener.service.mapper;
 
+import com.example.urlshortener.controller.request.LinkRequest;
+import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 class LinkMapperTest {
-    @Autowired
-    private LinkMapper mapper;
+    private LinkMapper mapper = new LinkMapper();
 
     @Test
-    void fromValidEntityToDto() {
+    void fromEntityToDto() {
         LocalDateTime time = LocalDateTime.now();
 
         LinkEntity entity = LinkEntity.builder()
-                .id(1)
-                .shortLink("12345678")
-                .longLink("http://test")
+                .shortLink("test")
+                .longLink("test")
                 .createAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -30,8 +27,8 @@ class LinkMapperTest {
         LinkDto actual = mapper.toDto(entity);
 
         LinkDto expected = LinkDto.builder()
-                .shortLink("12345678")
-                .longLink("http://test")
+                .shortLink("test")
+                .longLink("test")
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -41,32 +38,78 @@ class LinkMapperTest {
     }
 
     @Test
-    void fromInvalidFilledEntityToDto() {
+    void fromDtoToEntity() {
         LocalDateTime time = LocalDateTime.now();
 
-        LinkEntity entity = LinkEntity.builder()
+        LinkDto dto = LinkDto.builder()
                 .id(1)
-                .shortLink("12345678")
-                .longLink("http://test")
+                .shortLink("test")
+                .longLink("test")
+                .createdAt(time)
+                .expiredAt(time)
+                .transitions(0)
+                .build();
+
+        LinkEntity actual = mapper.toEntity(dto);
+
+        LinkEntity expected = LinkEntity.builder()
+                .shortLink("test")
+                .longLink("test")
                 .createAt(time)
                 .expiredAt(time)
                 .transitions(0)
                 .build();
-        LinkDto actual = mapper.toDto(entity);
 
-        LinkDto expected = LinkDto.builder()
-                .shortLink("123456789")
-                .longLink("http://test")
-                .build();
-
-        assertNotEquals(actual, expected);
+        assertEquals(actual, expected);
     }
 
     @Test
-    void fromInvalidNotFilledEntityToDto() {
-        assertThrows(Exception.class, () -> {
-            LinkEntity entity = LinkEntity.builder().build();
-            mapper.toDto(entity);
-        });
+    void fromRequestToDto() {
+        LocalDateTime time = LocalDateTime.now();
+
+        LinkRequest request = new LinkRequest();
+        request.setExpiredAt(time);
+        request.setOriginalLink("test");
+        LinkDto actual = mapper.toDto(request);
+
+        actual.setShortLink("test");
+        actual.setCreatedAt(time);
+        actual.setExpiredAt(time);
+        actual.setTransitions(0);
+
+        LinkDto expected = LinkDto.builder()
+                .shortLink("test")
+                .longLink("test")
+                .createdAt(time)
+                .expiredAt(time)
+                .transitions(0)
+                .build();
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void fromDtoToResponse() {
+        LocalDateTime time = LocalDateTime.now();
+
+        LinkDto dto = LinkDto.builder()
+                .shortLink("test")
+                .longLink("test")
+                .createdAt(time)
+                .expiredAt(time)
+                .transitions(0)
+                .build();
+
+
+        LinkResponse actual = mapper.toResponse(dto);
+        LinkResponse expected = LinkResponse.builder()
+                .shortLink("test")
+                .originalLink("test")
+                .createdAt(time)
+                .expiredAt(time)
+                .visitCount(0L)
+                .build();
+
+        assertEquals(actual, expected);
     }
 }
