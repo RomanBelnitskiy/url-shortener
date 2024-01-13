@@ -4,12 +4,10 @@ import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.data.repository.LinkRepository;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
-import io.swagger.v3.oas.models.links.Link;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
