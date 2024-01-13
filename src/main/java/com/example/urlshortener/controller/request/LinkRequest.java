@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,6 @@ public class LinkRequest {
     @NotBlank
     @Size(max = 2048)
     private String originalLink;
+    @NotBlank
+    private LocalDateTime expiredAt;
 }
