@@ -1,27 +1,22 @@
 package com.example.urlshortener.data.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "link")
 public class LinkEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(name = "short_url")
-    @NonNull
+    @Column(name = "short_url", nullable = false)
     private String shortLink;
 
-    @Column(name = "original_url")
-    @NonNull
+    @Column(name = "original_url", nullable = false)
     private String longLink;
 
     @CreatedDate
