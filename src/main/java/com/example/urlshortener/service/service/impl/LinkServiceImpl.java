@@ -3,6 +3,8 @@ package com.example.urlshortener.service.service.impl;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.data.repository.LinkRepository;
 import com.example.urlshortener.service.dto.LinkDto;
+import com.example.urlshortener.service.dto.exception.LinkNotFoundException;
+import com.example.urlshortener.service.mapper.LinkMapper;
 import com.example.urlshortener.service.service.LinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
-    public void update(LinkDto link) {
+    public void update(LinkDto link) throws LinkNotFoundException {
         //TODO Створити клас UpdateLinkRequest і в мапері перетворити на дто
         if (Objects.isNull(link.getId())) {
             throw new LinkNotFoundException();
@@ -63,7 +65,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public LinkDto getById(Long id) {
+    public LinkDto getById(Long id) throws LinkNotFoundException {
         Objects.requireNonNull(id);
 
         LinkEntity entity = linkRepository.findById(id).orElseThrow(() -> new LinkNotFoundException());
