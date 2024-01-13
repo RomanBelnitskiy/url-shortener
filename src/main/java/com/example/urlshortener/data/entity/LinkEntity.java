@@ -34,5 +34,5 @@ public class LinkEntity {
     LocalDateTime expiredAt = LocalDateTime.now();
 
     @Column(name = "visit_count")
-    Integer transitions;
+    Long transitions;
 }
