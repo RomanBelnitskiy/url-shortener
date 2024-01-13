@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS link (
 	expired_at timestamp NOT NULL,
 	visit_count bigint NOT NULL DEFAULT 0
 );
+
+-- test test
