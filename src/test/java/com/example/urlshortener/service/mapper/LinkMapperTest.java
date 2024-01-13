@@ -32,6 +32,9 @@ class LinkMapperTest {
         LinkDto expected = LinkDto.builder()
                 .shortLink("12345678")
                 .longLink("http://test")
+                .createdAt(time)
+                .expiredAt(time)
+                .transitions(0)
                 .build();
 
         assertEquals(actual, expected);
