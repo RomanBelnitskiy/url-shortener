@@ -1,7 +1,7 @@
 package com.example.urlshortener.service.service;
 
 import com.example.urlshortener.service.dto.LinkDto;
-import com.example.urlshortener.service.dto.exception.LinkNotFoundException;
+import com.example.urlshortener.exception.LinkNotFoundException;
 
 import java.util.List;
 
