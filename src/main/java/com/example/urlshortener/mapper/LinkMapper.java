@@ -1,4 +1,4 @@
-package com.example.urlshortener.service.mapper;
+package com.example.urlshortener.mapper;
 
 import com.example.urlshortener.controller.request.LinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;

@@ -5,7 +5,7 @@
 >### Run the application
 > The application has two profiles for launch: default and prod. 
 >+ Default: to run the program with the default profile, there is no need to do anything. 
->+ Prod: to run the program with the prod profile, you need to rename the .env.example file to .env and assign valid data to the keys in this file. 
+>+ Prod: to run the program with the prod profile, you need to copy and rename the copy of .env.example file to .env and assign a valid data to the keys in this file. 
 >  
 >  DB_URL is the URL for connecting to the database. 
 >  
