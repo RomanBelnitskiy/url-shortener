@@ -66,6 +66,7 @@ public class LinkServiceImpl implements LinkService {
         linkRepository.save(entity);
     }
 
+
     @Override
     public LinkDto getById(String id) throws LinkNotFoundException {
         Objects.requireNonNull(id);
