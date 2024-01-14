@@ -3,6 +3,7 @@ package com.example.urlshortener.service.mapper;
 import com.example.urlshortener.controller.request.LinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
+import com.example.urlshortener.mapper.LinkMapper;
 import com.example.urlshortener.service.dto.LinkDto;
 import org.junit.jupiter.api.Test;
 

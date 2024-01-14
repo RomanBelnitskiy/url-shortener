@@ -1,4 +1,4 @@
-package com.example.urlshortener.service.dto.exception;
+package com.example.urlshortener.exception;
 
 import com.example.urlshortener.service.dto.LinkDto;
 
