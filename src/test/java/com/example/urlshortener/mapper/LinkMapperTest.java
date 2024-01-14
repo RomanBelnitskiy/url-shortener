@@ -1,9 +1,10 @@
-package com.example.urlshortener.service.mapper;
+package com.example.urlshortener.mapper;
 
 import com.example.urlshortener.controller.request.LinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
+import com.example.urlshortener.service.mapper.LinkMapper;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
