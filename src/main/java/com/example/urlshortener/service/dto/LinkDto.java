@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LinkDto {
-    private long id;
     private String shortLink;
     private String longLink;
     private LocalDateTime createdAt;
