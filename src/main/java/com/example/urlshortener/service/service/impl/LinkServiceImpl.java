@@ -39,7 +39,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         //TODO змінти айді на стрінгу
         Objects.requireNonNull(id);
 
@@ -50,10 +50,12 @@ public class LinkServiceImpl implements LinkService {
     @Transactional
     public void update(LinkDto link) throws LinkNotFoundException {
         //TODO Створити клас UpdateLinkRequest і в мапері перетворити на дто
-        if (Objects.isNull(link.getId())) {
+        if (Objects.isNull(link.getShortLink())) {
             throw new LinkNotFoundException();
         }
-        LinkEntity entity = linkRepository.findById(link.getId()).orElseThrow(() -> new LinkNotFoundException());
+        LinkEntity entity = linkRepository.findByShortLink(
+                link.getShortLink()).orElseThrow(LinkNotFoundException::new
+        );
         if (link.getLongLink() != null) {
             //TODO треба додати валідацію довгої лінки
             entity.setLongLink(link.getLongLink());
@@ -64,11 +66,12 @@ public class LinkServiceImpl implements LinkService {
         linkRepository.save(entity);
     }
 
+
     @Override
-    public LinkDto getById(Long id) throws LinkNotFoundException {
+    public LinkDto getById(String id) throws LinkNotFoundException {
         Objects.requireNonNull(id);
 
-        LinkEntity entity = linkRepository.findById(id).orElseThrow(() -> new LinkNotFoundException());
+        LinkEntity entity = linkRepository.findByShortLink(id).orElseThrow(LinkNotFoundException::new);
         return linkMapper.toDto(entity);
     }
 }
