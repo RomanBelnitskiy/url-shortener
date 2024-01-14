@@ -43,7 +43,6 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         LinkDto dto = LinkDto.builder()
-                .id(1)
                 .shortLink("test")
                 .longLink("test")
                 .createdAt(time)
