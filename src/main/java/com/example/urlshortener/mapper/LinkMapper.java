@@ -1,6 +1,6 @@
 package com.example.urlshortener.mapper;
 
-import com.example.urlshortener.controller.request.LinkRequest;
+import com.example.urlshortener.controller.request.CreateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
@@ -24,7 +24,7 @@ public class LinkMapper {
                 .build();
     }
 
-    public LinkDto toDto(LinkRequest request) {
+    public LinkDto toDto(CreateLinkRequest request) {
         LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC);
         return LinkDto.builder()
                 .longLink(request.getOriginalLink())

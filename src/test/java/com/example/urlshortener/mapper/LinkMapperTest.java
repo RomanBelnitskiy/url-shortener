@@ -1,11 +1,9 @@
 package com.example.urlshortener.mapper;
 
-import com.example.urlshortener.controller.request.LinkRequest;
+import com.example.urlshortener.controller.request.CreateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
-import com.example.urlshortener.mapper.LinkMapper;
 import com.example.urlshortener.service.dto.LinkDto;
-import com.example.urlshortener.mapper.LinkMapper;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -68,7 +66,7 @@ class LinkMapperTest {
     void fromRequestToDto() {
         LocalDateTime time = LocalDateTime.now();
 
-        LinkRequest request = new LinkRequest();
+        CreateLinkRequest request = new CreateLinkRequest();
         request.setExpiredAt(time);
         request.setOriginalLink("test");
         LinkDto actual = mapper.toDto(request);
