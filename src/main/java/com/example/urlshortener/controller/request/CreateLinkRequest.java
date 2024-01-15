@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LinkRequest {
+public class CreateLinkRequest {
     @NotBlank
     @Size(max = 2048)
     private String originalLink;
