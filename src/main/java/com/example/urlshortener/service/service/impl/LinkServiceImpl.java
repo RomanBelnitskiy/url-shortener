@@ -63,7 +63,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
-    public void update(LinkDto link) throws LinkNotFoundException {
+    public void update(LinkDto link) {
         if (!shortLinkValidator.validate(link.getShortLink())) {
             throw new IllegalArgumentException("Invalid short link");
         }
@@ -85,7 +85,7 @@ public class LinkServiceImpl implements LinkService {
 
 
     @Override
-    public LinkDto getById(String id) throws LinkNotFoundException {
+    public LinkDto getById(String id) {
         if (!shortLinkValidator.validate(id)) {
             throw new IllegalArgumentException("Invalid id");
         }
