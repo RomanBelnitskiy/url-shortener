@@ -69,7 +69,7 @@ import static org.mockito.Mockito.*;
 //
 //    @Test
 //    @DisplayName("Should get link by id")
-//    void shouldGetLinkByIdTest() throws LinkNotFoundException {
+//    void shouldGetLinkByIdTest() {
 //        String shortLink = "short-link";
 //        LinkEntity linkEntity = createLinkEntity(shortLink, "long-link");
 //        LinkDto linkDto = new LinkDto();
