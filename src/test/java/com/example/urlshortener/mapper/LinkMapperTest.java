@@ -1,6 +1,7 @@
 package com.example.urlshortener.mapper;
 
 import com.example.urlshortener.controller.request.CreateLinkRequest;
+import com.example.urlshortener.controller.request.UpdateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
@@ -63,7 +64,7 @@ class LinkMapperTest {
     }
 
     @Test
-    void fromRequestToDto() {
+    void fromCreateRequestToDto() {
         LocalDateTime time = LocalDateTime.now();
 
         CreateLinkRequest request = new CreateLinkRequest();
@@ -74,6 +75,29 @@ class LinkMapperTest {
         actual.setShortLink("test");
         actual.setCreatedAt(time);
         actual.setExpiredAt(time);
+        actual.setTransitions(0);
+
+        LinkDto expected = LinkDto.builder()
+                .shortLink("test")
+                .longLink("test")
+                .createdAt(time)
+                .expiredAt(time)
+                .transitions(0)
+                .build();
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void fromUpdateRequestToDto() {
+        LocalDateTime time = LocalDateTime.now();
+
+        UpdateLinkRequest request = new UpdateLinkRequest();
+        request.setExpiredAt(time);
+        request.setOriginalLink("test");
+
+        LinkDto actual = mapper.toDto("test", request);
+        actual.setCreatedAt(time);
         actual.setTransitions(0);
 
         LinkDto expected = LinkDto.builder()
