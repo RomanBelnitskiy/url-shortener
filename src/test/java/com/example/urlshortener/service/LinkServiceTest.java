@@ -27,20 +27,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class LinkServiceTest {
-    @Mock
-    private LinkRepository repository;
-    private LinkServiceImpl service;
     private final LinkMapper mapper = new LinkMapper();
+    private final LinkRepository repository = Mockito.mock(LinkRepository.class);
     private final ShortLinkValidator shortLinkValidator = Mockito.mock(ShortLinkValidator.class);
     private final LongLinkValidator longLinkValidator = Mockito.mock(LongLinkValidator.class);
     private final Generator generator = Mockito.mock(Generator.class);
-
-    @BeforeEach
-    void initService() {
-        service = new LinkServiceImpl(repository, mapper, shortLinkValidator, longLinkValidator, generator);
-    }
+    private final LinkServiceImpl service = new LinkServiceImpl(
+            repository,
+            mapper,
+            shortLinkValidator,
+            longLinkValidator,
+            generator
+    );
 
     @Test
     @DisplayName("Should call repository.findAll() one time")
