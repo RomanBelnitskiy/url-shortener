@@ -62,11 +62,10 @@ public class LinkMapper {
     public List<LinkResponse> toResponses(List<LinkDto> links) {
         return links.stream().map(this::toResponse).collect(Collectors.toList());
     }
-    public LinkDto toLinkDto(String id, UpdateLinkRequest update) {
-        LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC);
+    public LinkDto toDto(String shortLink, UpdateLinkRequest updateLinkRequest) {
         return LinkDto.builder()
-                .shortLink(id)
-                .longLink(update.getOriginalLink())
-                .expiredAt(time.plusMonths(1)).build();
+                .shortLink(shortLink)
+                .longLink(updateLinkRequest.getOriginalLink())
+                .expiredAt(updateLinkRequest.getExpiredAt()).build();
     }
 }
