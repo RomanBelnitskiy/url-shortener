@@ -1,6 +1,7 @@
 package com.example.urlshortener.mapper;
 
 import com.example.urlshortener.controller.request.CreateLinkRequest;
+import com.example.urlshortener.controller.request.UpdateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
@@ -60,5 +61,12 @@ public class LinkMapper {
 
     public List<LinkResponse> toResponses(List<LinkDto> links) {
         return links.stream().map(this::toResponse).collect(Collectors.toList());
+    }
+    public LinkDto toLinkDto(String id, UpdateLinkRequest update) {
+        LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC);
+        return LinkDto.builder()
+                .shortLink(id)
+                .longLink(update.getOriginalLink())
+                .expiredAt(time.plusMonths(1)).build();
     }
 }
