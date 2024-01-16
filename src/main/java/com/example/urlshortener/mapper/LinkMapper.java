@@ -70,4 +70,10 @@ public class LinkMapper {
     public List<LinkResponse> toResponses(List<LinkDto> dtos) {
         return dtos.stream().map(this::toResponse).collect(Collectors.toList());
     }
+    public LinkDto toDto(String shortLink, UpdateLinkRequest updateLinkRequest) {
+        return LinkDto.builder()
+                .shortLink(shortLink)
+                .longLink(updateLinkRequest.getOriginalLink())
+                .expiredAt(updateLinkRequest.getExpiredAt()).build();
+    }
 }
