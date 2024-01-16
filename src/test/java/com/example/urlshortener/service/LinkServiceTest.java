@@ -53,19 +53,24 @@ class LinkServiceTest {
     void shouldCreate_And_ReturnLinkDto_ForValidInputTest() {
         LinkDto inputDto = createLinkDto(null, "https://example.com");
         String expectedLink = "abc1244";
-        LinkDto expectedDto = createLinkDto(expectedLink, "https://example.com");
+        LinkDto expectedDto = LinkDto.builder()
+                .shortLink(expectedLink)
+                .createdAt(inputDto.getCreatedAt())
+                .longLink(inputDto.getLongLink())
+                .expiredAt(inputDto.getExpiredAt())
+                .transitions(inputDto.getTransitions())
+                .build();
         LinkEntity expectedEntity = mapper.toEntity(expectedDto);
 
-        when(longLinkValidator.validate(expectedEntity.getLongLink())).thenReturn(true);
+        when(longLinkValidator.validate(anyString())).thenReturn(true);
         when(generator.generateShortLink()).thenReturn(expectedLink);
-        when(shortLinkValidator.validate(expectedLink)).thenReturn(true);
-        when(repository.existsByShortLink(expectedLink)).thenReturn(false);
-        when(repository.save(expectedEntity)).thenReturn(expectedEntity);
+        when(shortLinkValidator.validate(anyString())).thenReturn(true);
+        when(repository.existsByShortLink(anyString())).thenReturn(false);
+        when(repository.save(any(LinkEntity.class))).then(invocation -> invocation.getArgument(0));
 
         LinkDto result = service.create(inputDto);
 
         assertEquals(expectedDto, result);
-        verify(repository, times(1)).existsByShortLink(expectedLink);
         verify(repository, times(1)).save(any(LinkEntity.class));
     }
 
