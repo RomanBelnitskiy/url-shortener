@@ -1,6 +1,7 @@
 package com.example.urlshortener.mapper;
 
 import com.example.urlshortener.controller.request.CreateLinkRequest;
+import com.example.urlshortener.controller.request.UpdateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
@@ -34,7 +35,7 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -59,11 +60,11 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
-    void fromRequestToDto() {
+    void fromCreateRequestToDto() {
         LocalDateTime time = LocalDateTime.now();
 
         CreateLinkRequest request = new CreateLinkRequest();
@@ -84,7 +85,26 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void fromUpdateRequestToDto() {
+        LocalDateTime time = LocalDateTime.now();
+
+        UpdateLinkRequest request = new UpdateLinkRequest();
+        request.setExpiredAt(time);
+        request.setOriginalLink("test");
+
+        LinkDto actual = mapper.toDto("test", request);
+
+        LinkDto expected = LinkDto.builder()
+                .shortLink("test")
+                .longLink("test")
+                .expiredAt(time)
+                .build();
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -99,7 +119,6 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-
         LinkResponse actual = mapper.toResponse(dto);
         LinkResponse expected = LinkResponse.builder()
                 .shortLink("test")
@@ -109,6 +128,6 @@ class LinkMapperTest {
                 .visitCount(0L)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 }

@@ -59,8 +59,8 @@ public class LinkMapper {
         return links.stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public List<LinkResponse> toResponses(List<LinkDto> links) {
-        return links.stream().map(this::toResponse).collect(Collectors.toList());
+    public List<LinkResponse> toResponses(List<LinkDto> dtos) {
+        return dtos.stream().map(this::toResponse).collect(Collectors.toList());
     }
     public LinkDto toDto(String shortLink, UpdateLinkRequest updateLinkRequest) {
         return LinkDto.builder()
