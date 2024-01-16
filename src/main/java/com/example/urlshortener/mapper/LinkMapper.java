@@ -35,14 +35,6 @@ public class LinkMapper {
                 .build();
     }
 
-    public LinkDto toDto(String shortLink, UpdateLinkRequest request) {
-        return LinkDto.builder()
-                .longLink(request.getOriginalLink())
-                .shortLink(shortLink)
-                .expiredAt(request.getExpiredAt())
-                .build();
-    }
-
     public LinkEntity toEntity(LinkDto dto) {
         return LinkEntity.builder()
                 .longLink(dto.getLongLink())
