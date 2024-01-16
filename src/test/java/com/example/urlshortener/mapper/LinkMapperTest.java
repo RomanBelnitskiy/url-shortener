@@ -119,7 +119,6 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-
         LinkResponse actual = mapper.toResponse(dto);
         LinkResponse expected = LinkResponse.builder()
                 .shortLink("test")
