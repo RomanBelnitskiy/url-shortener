@@ -55,7 +55,13 @@ class LinkServiceTest {
     void shouldCreate_And_ReturnLinkDto_ForValidInputTest() {
         LinkDto inputDto = createLinkDto(null, "https://example.com");
         String expectedLink = "abc1244";
-        LinkDto expectedDto = createLinkDto(expectedLink, "https://example.com");
+        LinkDto expectedDto = LinkDto.builder()
+                .shortLink(expectedLink)
+                .createdAt(inputDto.getCreatedAt())
+                .longLink(inputDto.getLongLink())
+                .expiredAt(inputDto.getExpiredAt())
+                .transitions(inputDto.getTransitions())
+                .build();
         LinkEntity expectedEntity = mapper.toEntity(expectedDto);
 
         when(longLinkValidator.validate(anyString())).thenReturn(true);
