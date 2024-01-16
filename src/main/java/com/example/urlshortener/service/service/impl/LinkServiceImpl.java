@@ -5,6 +5,7 @@ import com.example.urlshortener.data.repository.LinkRepository;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.mapper.LinkMapper;
+import com.example.urlshortener.service.generator.Generator;
 import com.example.urlshortener.service.service.LinkService;
 import com.example.urlshortener.validator.LongLinkValidator;
 import com.example.urlshortener.validator.ShortLinkValidator;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
-import static com.example.urlshortener.service.generator.Generator.generateShortLink;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,7 @@ public class LinkServiceImpl implements LinkService {
     private final LinkMapper linkMapper;
     private final ShortLinkValidator shortLinkValidator;
     private final LongLinkValidator longLinkValidator;
+    private final Generator generator;
 
     @Override
     public List<LinkDto> findAll() {
@@ -42,7 +43,7 @@ public class LinkServiceImpl implements LinkService {
         }
 
         do {
-            entity.setShortLink(generateShortLink());
+            entity.setShortLink(generator.generateShortLink());
             if (!shortLinkValidator.validate(entity.getShortLink())) {
                 throw new IllegalArgumentException("Invalid short link");
             }
