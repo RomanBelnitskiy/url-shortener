@@ -35,7 +35,7 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -60,7 +60,7 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -85,7 +85,7 @@ class LinkMapperTest {
                 .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -97,18 +97,14 @@ class LinkMapperTest {
         request.setOriginalLink("test");
 
         LinkDto actual = mapper.toDto("test", request);
-        actual.setCreatedAt(time);
-        actual.setTransitions(0);
 
         LinkDto expected = LinkDto.builder()
                 .shortLink("test")
                 .longLink("test")
-                .createdAt(time)
                 .expiredAt(time)
-                .transitions(0)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -133,6 +129,6 @@ class LinkMapperTest {
                 .visitCount(0L)
                 .build();
 
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 }
