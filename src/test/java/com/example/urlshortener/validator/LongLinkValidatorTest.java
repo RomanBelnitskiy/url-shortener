@@ -26,6 +26,16 @@ class LongLinkValidatorTest {
         assertTrue(result);
     }
 
+    @Test
+    @DisplayName("When long link is valid then return true")
+    void whenLongLinkIsValid2_ThenReturnTrue() {
+        String longLink = "https://www.baeldung.com/hibernate-criteria-queries";
+
+        boolean result = validator.validate(longLink);
+
+        assertTrue(result);
+    }
+
     @ParameterizedTest
     @DisplayName("When long link is not valid URL then return false")
     @ValueSource(strings = {
