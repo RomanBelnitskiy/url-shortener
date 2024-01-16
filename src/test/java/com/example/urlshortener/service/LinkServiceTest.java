@@ -65,6 +65,7 @@ class LinkServiceTest {
         LinkDto result = service.create(inputDto);
 
         assertEquals(expectedDto, result);
+        verify(repository, times(1)).existsByShortLink(expectedLink);
         verify(repository, times(1)).save(any(LinkEntity.class));
     }
 
