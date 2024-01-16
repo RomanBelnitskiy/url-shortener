@@ -16,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -28,18 +26,18 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LinkServiceTest {
-    private final LinkMapper mapper = new LinkMapper();
+
+    private LinkServiceImpl service;
     private final LinkRepository repository = Mockito.mock(LinkRepository.class);
+    private final LinkMapper mapper = new LinkMapper();
     private final ShortLinkValidator shortLinkValidator = Mockito.mock(ShortLinkValidator.class);
     private final LongLinkValidator longLinkValidator = Mockito.mock(LongLinkValidator.class);
     private final Generator generator = Mockito.mock(Generator.class);
-    private final LinkServiceImpl service = new LinkServiceImpl(
-            repository,
-            mapper,
-            shortLinkValidator,
-            longLinkValidator,
-            generator
-    );
+
+    @BeforeEach
+    void initService() {
+        service = new LinkServiceImpl(repository, mapper, shortLinkValidator, longLinkValidator, generator);
+    }
 
     @Test
     @DisplayName("Should call repository.findAll() one time")
