@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LinkResponse {
-    private String shortLink;
-    private String originalLink;
+    private String shortUrl;
+    private String longUrl;
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
-    private Long visitCount;
+    private Long transitions;
 }

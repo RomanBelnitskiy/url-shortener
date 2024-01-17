@@ -1,7 +1,5 @@
 package com.example.urlshortener.controller;
 
-import com.example.urlshortener.data.entity.LinkEntity;
-import com.example.urlshortener.data.repository.LinkRepository;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
 import org.junit.jupiter.api.Test;
@@ -12,8 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Optional;
 
 @WebMvcTest(MainController.class)
 class MainControllerTest {
@@ -26,17 +22,17 @@ class MainControllerTest {
 
     @Test
     void redirectToOriginalUrl_ShouldRedirectToOriginalUrl_WhenShortLinkExists() throws Exception {
-        String shortLink = "abc123";
-        String longLink = "http://example.com";
+        String shortUrl = "abc123";
+        String longUrl = "http://example.com";
 
         LinkDto linkDto = new LinkDto();
-        linkDto.setShortLink(shortLink);
-        linkDto.setLongLink(longLink);
+        linkDto.setShortUrl(shortUrl);
+        linkDto.setLongUrl(longUrl);
 
-        Mockito.when(linkService.getById(shortLink)).thenReturn(linkDto);
+        Mockito.when(linkService.getByShortUrl(shortUrl)).thenReturn(linkDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/{shortLink}", shortLink))
+        mockMvc.perform(MockMvcRequestBuilders.get("/{shortUrl}", shortUrl))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl(longLink));
+                .andExpect(MockMvcResultMatchers.redirectedUrl(longUrl));
     }
 }

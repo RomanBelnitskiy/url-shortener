@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 public class LinkEntity {
     @Id
     @Column(name = "short_url", nullable = false)
-    private String shortLink;
+    private String shortUrl;
 
     @Column(name = "original_url", nullable = false)
-    private String longLink;
+    private String longUrl;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @CreatedDate
     @Column(name = "expired_at", nullable = false)

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class CreateLinkRequest {
     @NotBlank
     @Size(max = 2048)
-    private String originalLink;
+    private String longUrl;
     @NotBlank
     private LocalDateTime expiredAt;
 }

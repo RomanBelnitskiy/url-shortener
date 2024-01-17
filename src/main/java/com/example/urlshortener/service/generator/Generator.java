@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Generator {
-    public String generateShortLink() {
+    public String generateShortUrl() {
         return RandomStringUtils.randomAlphanumeric(8);
     }
 }

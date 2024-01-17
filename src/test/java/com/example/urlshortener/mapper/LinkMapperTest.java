@@ -19,17 +19,17 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         LinkEntity entity = LinkEntity.builder()
-                .shortLink("test")
-                .longLink("test")
-                .createAt(time)
+                .shortUrl("test")
+                .longUrl("test")
+                .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
                 .build();
         LinkDto actual = mapper.toDto(entity);
 
         LinkDto expected = LinkDto.builder()
-                .shortLink("test")
-                .longLink("test")
+                .shortUrl("test")
+                .longUrl("test")
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -43,8 +43,8 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         LinkDto dto = LinkDto.builder()
-                .shortLink("test")
-                .longLink("test")
+                .shortUrl("test")
+                .longUrl("test")
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -53,9 +53,9 @@ class LinkMapperTest {
         LinkEntity actual = mapper.toEntity(dto);
 
         LinkEntity expected = LinkEntity.builder()
-                .shortLink("test")
-                .longLink("test")
-                .createAt(time)
+                .shortUrl("test")
+                .longUrl("test")
+                .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
                 .build();
@@ -69,17 +69,17 @@ class LinkMapperTest {
 
         CreateLinkRequest request = new CreateLinkRequest();
         request.setExpiredAt(time);
-        request.setOriginalLink("test");
+        request.setLongUrl("test");
         LinkDto actual = mapper.toDto(request);
 
-        actual.setShortLink("test");
+        actual.setShortUrl("test");
         actual.setCreatedAt(time);
         actual.setExpiredAt(time);
         actual.setTransitions(0);
 
         LinkDto expected = LinkDto.builder()
-                .shortLink("test")
-                .longLink("test")
+                .shortUrl("test")
+                .longUrl("test")
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -94,13 +94,13 @@ class LinkMapperTest {
 
         UpdateLinkRequest request = new UpdateLinkRequest();
         request.setExpiredAt(time);
-        request.setOriginalLink("test");
+        request.setLongUrl("test");
 
         LinkDto actual = mapper.toDto("test", request);
 
         LinkDto expected = LinkDto.builder()
-                .shortLink("test")
-                .longLink("test")
+                .shortUrl("test")
+                .longUrl("test")
                 .expiredAt(time)
                 .build();
 
@@ -112,8 +112,8 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         LinkDto dto = LinkDto.builder()
-                .shortLink("test")
-                .longLink("test")
+                .shortUrl("test")
+                .longUrl("test")
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -121,11 +121,11 @@ class LinkMapperTest {
 
         LinkResponse actual = mapper.toResponse(dto);
         LinkResponse expected = LinkResponse.builder()
-                .shortLink("test")
-                .originalLink("test")
+                .shortUrl("test")
+                .longUrl("test")
                 .createdAt(time)
                 .expiredAt(time)
-                .visitCount(0L)
+                .transitions(0L)
                 .build();
 
         assertEquals(expected, actual);

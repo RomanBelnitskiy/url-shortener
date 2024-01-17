@@ -17,9 +17,9 @@ public class LinkMapper {
 
     public LinkDto toDto(LinkEntity link) {
         return LinkDto.builder()
-                .longLink(link.getLongLink())
-                .shortLink(link.getShortLink())
-                .createdAt(link.getCreateAt())
+                .longUrl(link.getLongUrl())
+                .shortUrl(link.getShortUrl())
+                .createdAt(link.getCreatedAt())
                 .expiredAt(link.getExpiredAt())
                 .transitions(link.getTransitions())
                 .build();
@@ -28,7 +28,7 @@ public class LinkMapper {
     public LinkDto toDto(CreateLinkRequest request) {
         LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC);
         return LinkDto.builder()
-                .longLink(request.getOriginalLink())
+                .longUrl(request.getLongUrl())
                 .createdAt(time)
                 .expiredAt(time.plusMonths(1))
                 .transitions(0)
@@ -37,9 +37,9 @@ public class LinkMapper {
 
     public LinkEntity toEntity(LinkDto dto) {
         return LinkEntity.builder()
-                .longLink(dto.getLongLink())
-                .shortLink(dto.getShortLink())
-                .createAt(dto.getCreatedAt())
+                .longUrl(dto.getLongUrl())
+                .shortUrl(dto.getShortUrl())
+                .createdAt(dto.getCreatedAt())
                 .expiredAt(dto.getExpiredAt())
                 .transitions(dto.getTransitions())
                 .build();
@@ -47,11 +47,11 @@ public class LinkMapper {
 
     public LinkResponse toResponse(LinkDto dto) {
         return LinkResponse.builder()
-                .originalLink(dto.getLongLink())
-                .shortLink(dto.getShortLink())
+                .longUrl(dto.getLongUrl())
+                .shortUrl(dto.getShortUrl())
                 .createdAt(dto.getCreatedAt())
                 .expiredAt(dto.getExpiredAt())
-                .visitCount(dto.getTransitions())
+                .transitions(dto.getTransitions())
                 .build();
     }
 
@@ -62,10 +62,10 @@ public class LinkMapper {
     public List<LinkResponse> toResponses(List<LinkDto> dtos) {
         return dtos.stream().map(this::toResponse).collect(Collectors.toList());
     }
-    public LinkDto toDto(String shortLink, UpdateLinkRequest updateLinkRequest) {
+    public LinkDto toDto(String shortUrl, UpdateLinkRequest updateLinkRequest) {
         return LinkDto.builder()
-                .shortLink(shortLink)
-                .longLink(updateLinkRequest.getOriginalLink())
+                .shortUrl(shortUrl)
+                .longUrl(updateLinkRequest.getLongUrl())
                 .expiredAt(updateLinkRequest.getExpiredAt()).build();
     }
 }

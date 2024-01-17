@@ -9,19 +9,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-class LongLinkValidatorTest {
-    private final LongLinkValidator validator;
+class LongUrlValidatorTest {
+    private final LongUrlValidator validator;
 
-    LongLinkValidatorTest() {
-        validator = new LongLinkValidator();
+    LongUrlValidatorTest() {
+        validator = new LongUrlValidator();
     }
 
     @Test
     @DisplayName("When long link is valid then return true")
     void whenLongLinkIsValid_ThenReturnTrue() {
-        String longLink = "https://github.com/RomanBelnitskiy/url-shortener";
+        String longUrl = "https://github.com/RomanBelnitskiy/url-shortener";
 
-        boolean result = validator.validate(longLink);
+        boolean result = validator.validate(longUrl);
 
         assertTrue(result);
     }
@@ -29,9 +29,9 @@ class LongLinkValidatorTest {
     @Test
     @DisplayName("When long link is valid then return true")
     void whenLongLinkIsValid2_ThenReturnTrue() {
-        String longLink = "https://www.baeldung.com/hibernate-criteria-queries";
+        String longUrl = "https://www.baeldung.com/hibernate-criteria-queries";
 
-        boolean result = validator.validate(longLink);
+        boolean result = validator.validate(longUrl);
 
         assertTrue(result);
     }
@@ -42,8 +42,8 @@ class LongLinkValidatorTest {
             "ABcd8822",
             "https://github1.com/RomanBelnitskiy/url-shortener"
     })
-    void whenLongLinkIsNotValidURL_ThenReturnFalse(String longLink) {
-        boolean result = validator.validate(longLink);
+    void whenLongLinkIsNotValidURL_ThenReturnFalse(String longUrl) {
+        boolean result = validator.validate(longUrl);
 
         assertFalse(result);
     }

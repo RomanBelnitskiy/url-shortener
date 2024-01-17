@@ -7,8 +7,8 @@ import com.example.urlshortener.mapper.LinkMapper;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.generator.Generator;
 import com.example.urlshortener.service.service.impl.LinkServiceImpl;
-import com.example.urlshortener.validator.LongLinkValidator;
-import com.example.urlshortener.validator.ShortLinkValidator;
+import com.example.urlshortener.validator.LongUrlValidator;
+import com.example.urlshortener.validator.ShortUrlValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,13 +30,13 @@ class LinkServiceTest {
     private LinkRepository repository;
     private LinkServiceImpl service;
     private final LinkMapper mapper = new LinkMapper();
-    private final ShortLinkValidator shortLinkValidator = Mockito.mock(ShortLinkValidator.class);
-    private final LongLinkValidator longLinkValidator = Mockito.mock(LongLinkValidator.class);
+    private final ShortUrlValidator shortUrlValidator = Mockito.mock(ShortUrlValidator.class);
+    private final LongUrlValidator longUrlValidator = Mockito.mock(LongUrlValidator.class);
     private final Generator generator = Mockito.mock(Generator.class);
 
     @BeforeEach
     void initService() {
-        service = new LinkServiceImpl(repository, mapper, shortLinkValidator, longLinkValidator, generator);
+        service = new LinkServiceImpl(repository, mapper, shortUrlValidator, longUrlValidator, generator);
     }
 
     @Test
@@ -52,20 +52,19 @@ class LinkServiceTest {
     @DisplayName("Should create and return LinkDto for valid input")
     void shouldCreate_And_ReturnLinkDto_ForValidInputTest() {
         LinkDto inputDto = createLinkDto(null, "https://example.com");
-        String expectedLink = "abc1244";
+        String expectedUrl = "abc1244";
         LinkDto expectedDto = LinkDto.builder()
-                .shortLink(expectedLink)
+                .shortUrl(expectedUrl)
                 .createdAt(inputDto.getCreatedAt())
-                .longLink(inputDto.getLongLink())
+                .longUrl(inputDto.getLongUrl())
                 .expiredAt(inputDto.getExpiredAt())
                 .transitions(inputDto.getTransitions())
                 .build();
-        LinkEntity expectedEntity = mapper.toEntity(expectedDto);
 
-        when(longLinkValidator.validate(anyString())).thenReturn(true);
-        when(generator.generateShortLink()).thenReturn(expectedLink);
-        when(shortLinkValidator.validate(anyString())).thenReturn(true);
-        when(repository.existsByShortLink(anyString())).thenReturn(false);
+        when(longUrlValidator.validate(anyString())).thenReturn(true);
+        when(generator.generateShortUrl()).thenReturn(expectedUrl);
+        when(shortUrlValidator.validate(anyString())).thenReturn(true);
+        when(repository.existsByShortUrl(anyString())).thenReturn(false);
         when(repository.save(any(LinkEntity.class))).then(invocation -> invocation.getArgument(0));
 
         LinkDto result = service.create(inputDto);
@@ -77,11 +76,11 @@ class LinkServiceTest {
     @Test
     @DisplayName("Should throw IllegalArgumentException for invalid long link when create")
     void shouldThrowIllegalArgumentException_ForInvalidLongLinkTest() {
-        LinkDto invalidLongLink = createLinkDto(null, "https://invalid-long-link.com");
+        LinkDto invalidLongUrl = createLinkDto(null, "https://invalid-long-link.com");
 
-        when(longLinkValidator.validate(invalidLongLink.getLongLink())).thenReturn(false);
+        when(longUrlValidator.validate(invalidLongUrl.getLongUrl())).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> service.create(invalidLongLink));
+        assertThrows(IllegalArgumentException.class, () -> service.create(invalidLongUrl));
     }
 
     @Test
@@ -90,8 +89,8 @@ class LinkServiceTest {
         LinkDto inputDto = createLinkDto(null, "https://example.com");
         LinkEntity expectedEntity = mapper.toEntity(inputDto);
 
-        when(longLinkValidator.validate(expectedEntity.getLongLink())).thenReturn(true);
-        when(shortLinkValidator.validate(any())).thenReturn(false);
+        when(longUrlValidator.validate(expectedEntity.getLongUrl())).thenReturn(true);
+        when(shortUrlValidator.validate(any())).thenReturn(false);
 
         assertThrows(IllegalArgumentException.class, () -> service.create(inputDto));
         verify(repository, never()).save(any(LinkEntity.class));
@@ -103,11 +102,11 @@ class LinkServiceTest {
         LinkDto inputDto = createLinkDto("abc123", "https://example.com");
         LinkEntity expectedEntity = mapper.toEntity(inputDto);
 
-        when(longLinkValidator.validate(expectedEntity.getLongLink())).thenReturn(true);
-        when(shortLinkValidator.validate(expectedEntity.getShortLink())).thenReturn(false);
+        when(longUrlValidator.validate(expectedEntity.getLongUrl())).thenReturn(true);
+        when(shortUrlValidator.validate(expectedEntity.getShortUrl())).thenReturn(false);
 
         assertThrows(IllegalArgumentException.class, () -> service.create(inputDto));
-        verify(repository, never()).existsByShortLink(expectedEntity.getShortLink());
+        verify(repository, never()).existsByShortUrl(expectedEntity.getShortUrl());
         verify(repository, never()).save(any(LinkEntity.class));
     }
 
@@ -116,7 +115,7 @@ class LinkServiceTest {
     void shouldThrowIllegalArgumentException_ForShortLink_WhenUpdateTest() {
         LinkDto inputDto = createLinkDto("abc123", "https://example.com");
 
-        when(shortLinkValidator.validate(inputDto.getShortLink())).thenReturn(false);
+        when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(false);
 
         assertThrows(IllegalArgumentException.class, () -> service.update(inputDto));
     }
@@ -126,8 +125,8 @@ class LinkServiceTest {
     void shouldThrowLinkNotFoundException_ForShortLink_WhenUpdateTest() {
         LinkDto inputDto = createLinkDto("abc123", "https://example.com");
 
-        when(shortLinkValidator.validate(inputDto.getShortLink())).thenReturn(true);
-        when(repository.findByShortLink(inputDto.getShortLink())).thenReturn(Optional.empty());
+        when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
+        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.empty());
 
         assertThrows(LinkNotFoundException.class, () -> service.update(inputDto));
     }
@@ -138,9 +137,9 @@ class LinkServiceTest {
         LinkDto inputDto = createLinkDto("abc123", "https://example.com");
         LinkEntity expectedEntity = createLinkEntity("abc123", "https://invalid-link.com");
 
-        when(shortLinkValidator.validate(inputDto.getShortLink())).thenReturn(true);
-        when(repository.findByShortLink(inputDto.getShortLink())).thenReturn(Optional.of(expectedEntity));
-        when(longLinkValidator.validate(expectedEntity.getLongLink())).thenReturn(false);
+        when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
+        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.of(expectedEntity));
+        when(longUrlValidator.validate(expectedEntity.getLongUrl())).thenReturn(false);
 
         assertThrows(IllegalArgumentException.class, () -> service.update(inputDto));
     }
@@ -150,35 +149,35 @@ class LinkServiceTest {
     void shouldUpdateLongLinkWhenUpdateTest() {
         String shortLink = "abc123";
         LinkDto inputDto = createLinkDto(shortLink, "https://example.com");
-        String newLongLink = "https://new-link.com";
+        String newLongUrl = "https://new-link.com";
         LinkEntity originalEntity = createLinkEntity(shortLink, "https://example.com");
 
-        when(shortLinkValidator.validate(inputDto.getShortLink())).thenReturn(true);
-        when(repository.findByShortLink(inputDto.getShortLink())).thenReturn(Optional.of(originalEntity));
-        when(longLinkValidator.validate(newLongLink)).thenReturn(true);
+        when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
+        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.of(originalEntity));
+        when(longUrlValidator.validate(newLongUrl)).thenReturn(true);
 
-        inputDto.setLongLink(newLongLink);
+        inputDto.setLongUrl(newLongUrl);
         service.update(inputDto);
 
-        verify(repository, times(1)).findByShortLink(shortLink);
-        assertEquals(newLongLink, originalEntity.getLongLink());
+        verify(repository, times(1)).findByShortUrl(shortLink);
+        assertEquals(newLongUrl, originalEntity.getLongUrl());
     }
 
     @Test
     @DisplayName("Should update expiredAt when update")
     void shouldUpdateExpiredAt_WhenUpdateTest() {
-        String shortLink = "abc123";
-        LinkDto inputDto = createLinkDto(shortLink, "https://example.com");
+        String shortUrl = "abc123";
+        LinkDto inputDto = createLinkDto(shortUrl, "https://example.com");
         LocalDateTime newExpiredAt = LocalDateTime.now().plusDays(5);
-        LinkEntity originalEntity = createLinkEntity(shortLink, "https://example.com");
+        LinkEntity originalEntity = createLinkEntity(shortUrl, "https://example.com");
 
-        when(shortLinkValidator.validate(inputDto.getShortLink())).thenReturn(true);
-        when(repository.findByShortLink(inputDto.getShortLink())).thenReturn(Optional.of(originalEntity));
+        when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
+        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.of(originalEntity));
 
         inputDto.setExpiredAt(newExpiredAt);
         service.update(inputDto);
 
-        verify(repository, times(1)).findByShortLink(shortLink);
+        verify(repository, times(1)).findByShortUrl(shortUrl);
 
         assertEquals(newExpiredAt, originalEntity.getExpiredAt());
     }
@@ -186,74 +185,74 @@ class LinkServiceTest {
     @Test
     @DisplayName("Should delete link by valid id")
     void shouldDeleteLinkByValidIdTest() {
-        String validLinkId = "abc123";
+        String validShortUrl = "abc123";
 
-        when(shortLinkValidator.validate(validLinkId)).thenReturn(true);
-        service.deleteById(validLinkId);
+        when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
+        service.deleteByShortUrl(validShortUrl);
 
-        verify(repository, times(1)).deleteById(validLinkId);
+        verify(repository, times(1)).deleteById(validShortUrl);
     }
 
     @Test
     @DisplayName("Should throw IllegalArgumentException for invalid id when deleteById")
     void shouldThrowExceptionForInvalidIdTest() {
-        String invalidLinkId = "bbb5555";
+        String invalidShortUrl = "bbb5555";
 
-        assertThrows(IllegalArgumentException.class, () -> service.deleteById(invalidLinkId));
+        assertThrows(IllegalArgumentException.class, () -> service.deleteByShortUrl(invalidShortUrl));
     }
 
     @Test
     @DisplayName("Should return link when a valid id is provided")
     void shouldReturnLinkDtoForValidIdTest() {
-        String validLinkId = "abc123";
-        LinkEntity mockEntity = createLinkEntity(validLinkId, "https://example.com");
+        String validShortUrl = "abc123";
+        LinkEntity mockEntity = createLinkEntity(validShortUrl, "https://example.com");
 
-        when(shortLinkValidator.validate(validLinkId)).thenReturn(true);
-        when(repository.findByShortLink(validLinkId)).thenReturn(Optional.of(mockEntity));
+        when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
+        when(repository.findByShortUrl(validShortUrl)).thenReturn(Optional.of(mockEntity));
 
-        LinkDto resultDto = service.getById(validLinkId);
+        LinkDto resultDto = service.getByShortUrl(validShortUrl);
 
-        assertEquals(validLinkId, resultDto.getShortLink());
+        assertEquals(validShortUrl, resultDto.getShortUrl());
     }
 
     @Test
     @DisplayName("Should throw LinkNotFoundException for non-existing id")
     void shouldThrowLinkNotFoundException_ForNonExistingIdTest() {
-        String nonExistingLinkId = "aaa666";
+        String nonExistingShortUrl = "aaa666";
 
-        when(shortLinkValidator.validate(nonExistingLinkId)).thenReturn(true);
-        when(repository.findByShortLink(nonExistingLinkId)).thenReturn(Optional.empty());
+        when(shortUrlValidator.validate(nonExistingShortUrl)).thenReturn(true);
+        when(repository.findByShortUrl(nonExistingShortUrl)).thenReturn(Optional.empty());
 
-        assertThrows(LinkNotFoundException.class, () -> service.getById(nonExistingLinkId));
+        assertThrows(LinkNotFoundException.class, () -> service.getByShortUrl(nonExistingShortUrl));
     }
 
     @Test
     @DisplayName("Should throw IllegalArgumentException for invalid id")
     void shouldThrowIllegalArgumentException_ForInvalidIdTest() {
-        String invalidLinkId = "aaa666";
+        String invalidShortUrl = "aaa666";
 
-        when(shortLinkValidator.validate(invalidLinkId)).thenReturn(false);
+        when(shortUrlValidator.validate(invalidShortUrl)).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> service.getById(invalidLinkId));
-        verify(repository, never()).findByShortLink(any());
+        assertThrows(IllegalArgumentException.class, () -> service.getByShortUrl(invalidShortUrl));
+        verify(repository, never()).findByShortUrl(any());
     }
 
 
-    private LinkDto createLinkDto(String shortLink, String longLink) {
+    private LinkDto createLinkDto(String shortUrl, String longUrl) {
         return LinkDto.builder()
-                .shortLink(shortLink)
-                .longLink(longLink)
+                .shortUrl(shortUrl)
+                .longUrl(longUrl)
                 .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDateTime.now().plusMonths(1))
                 .transitions(0)
                 .build();
     }
 
-    private LinkEntity createLinkEntity(String shortLink, String longLink) {
+    private LinkEntity createLinkEntity(String shortUrl, String longUrl) {
         return LinkEntity.builder()
-                .shortLink(shortLink)
-                .longLink(longLink)
-                .createAt(LocalDateTime.now())
+                .shortUrl(shortUrl)
+                .longUrl(longUrl)
+                .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDateTime.now().plusMonths(1))
                 .transitions(0)
                 .build();

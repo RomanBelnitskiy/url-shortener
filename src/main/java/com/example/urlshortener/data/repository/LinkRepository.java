@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface LinkRepository extends JpaRepository<LinkEntity, String> {
-    Optional<LinkEntity> findByShortLink(String shortLink);
+    Optional<LinkEntity> findByShortUrl(String shortUrl);
 
-    boolean existsByShortLink(String shortLink);
+    boolean existsByShortUrl(String shortUrl);
 }

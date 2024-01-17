@@ -10,11 +10,11 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 @Component
-public class LongLinkValidator {
+public class LongUrlValidator {
     private static final String[] schemes = {"http", "https"};
     private final UrlValidator urlValidator;
 
-    public LongLinkValidator() {
+    public LongUrlValidator() {
         this.urlValidator = new UrlValidator(schemes);
     }
 

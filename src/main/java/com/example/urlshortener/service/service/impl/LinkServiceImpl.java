@@ -7,8 +7,8 @@ import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.mapper.LinkMapper;
 import com.example.urlshortener.service.generator.Generator;
 import com.example.urlshortener.service.service.LinkService;
-import com.example.urlshortener.validator.LongLinkValidator;
-import com.example.urlshortener.validator.ShortLinkValidator;
+import com.example.urlshortener.validator.LongUrlValidator;
+import com.example.urlshortener.validator.ShortUrlValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +22,8 @@ import java.util.Objects;
 public class LinkServiceImpl implements LinkService {
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
-    private final ShortLinkValidator shortLinkValidator;
-    private final LongLinkValidator longLinkValidator;
+    private final ShortUrlValidator shortUrlValidator;
+    private final LongUrlValidator longUrlValidator;
     private final Generator generator;
 
     @Override
@@ -38,42 +38,42 @@ public class LinkServiceImpl implements LinkService {
 
         LinkEntity entity = linkMapper.toEntity(link);
 
-        if (!longLinkValidator.validate(entity.getLongLink())) {
+        if (!longUrlValidator.validate(entity.getLongUrl())) {
             throw new IllegalArgumentException("Invalid long link");
         }
 
         do {
-            entity.setShortLink(generator.generateShortLink());
-            if (!shortLinkValidator.validate(entity.getShortLink())) {
+            entity.setShortUrl(generator.generateShortUrl());
+            if (!shortUrlValidator.validate(entity.getShortUrl())) {
                 throw new IllegalArgumentException("Invalid short link");
             }
-        } while (linkRepository.existsByShortLink(entity.getShortLink()));
+        } while (linkRepository.existsByShortUrl(entity.getShortUrl()));
 
         return linkMapper.toDto(linkRepository.save(entity));
     }
 
     @Override
     @Transactional
-    public void deleteById(String id) {
-        if (!shortLinkValidator.validate(id)) {
+    public void deleteByShortUrl(String shortUrl) {
+        if (!shortUrlValidator.validate(shortUrl)) {
             throw new IllegalArgumentException("Invalid id");
         }
 
-        linkRepository.deleteById(id);
+        linkRepository.deleteById(shortUrl);
     }
 
     @Override
     @Transactional
     public void update(LinkDto link) {
-        if (!shortLinkValidator.validate(link.getShortLink())) {
+        if (!shortUrlValidator.validate(link.getShortUrl())) {
             throw new IllegalArgumentException("Invalid short link");
         }
-        LinkEntity entity = linkRepository.findByShortLink(
-                link.getShortLink()).orElseThrow(LinkNotFoundException::new);
+        LinkEntity entity = linkRepository.findByShortUrl(
+                link.getShortUrl()).orElseThrow(LinkNotFoundException::new);
 
-        if (!entity.getLongLink().equals(link.getLongLink())) {
-            if (longLinkValidator.validate(link.getLongLink())) {
-                entity.setLongLink(link.getLongLink());
+        if (!entity.getLongUrl().equals(link.getLongUrl())) {
+            if (longUrlValidator.validate(link.getLongUrl())) {
+                entity.setLongUrl(link.getLongUrl());
             } else {
                 throw new IllegalArgumentException("Invalid long link");
             }
@@ -86,12 +86,12 @@ public class LinkServiceImpl implements LinkService {
 
 
     @Override
-    public LinkDto getById(String id) {
-        if (!shortLinkValidator.validate(id)) {
+    public LinkDto getByShortUrl(String shortUrl) {
+        if (!shortUrlValidator.validate(shortUrl)) {
             throw new IllegalArgumentException("Invalid id");
         }
 
-        LinkEntity entity = linkRepository.findByShortLink(id).orElseThrow(LinkNotFoundException::new);
+        LinkEntity entity = linkRepository.findByShortUrl(shortUrl).orElseThrow(LinkNotFoundException::new);
         return linkMapper.toDto(entity);
     }
 }
