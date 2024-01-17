@@ -60,7 +60,6 @@ class LinkServiceTest {
                 .expiredAt(inputDto.getExpiredAt())
                 .transitions(inputDto.getTransitions())
                 .build();
-        LinkEntity expectedEntity = mapper.toEntity(expectedDto);
 
         when(longUrlValidator.validate(anyString())).thenReturn(true);
         when(generator.generateShortUrl()).thenReturn(expectedUrl);
@@ -186,55 +185,55 @@ class LinkServiceTest {
     @Test
     @DisplayName("Should delete link by valid id")
     void shouldDeleteLinkByValidIdTest() {
-        String validUrlId = "abc123";
+        String validShortUrl = "abc123";
 
-        when(shortUrlValidator.validate(validUrlId)).thenReturn(true);
-        service.deleteByShortUrl(validUrlId);
+        when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
+        service.deleteByShortUrl(validShortUrl);
 
-        verify(repository, times(1)).deleteById(validUrlId);
+        verify(repository, times(1)).deleteById(validShortUrl);
     }
 
     @Test
     @DisplayName("Should throw IllegalArgumentException for invalid id when deleteById")
     void shouldThrowExceptionForInvalidIdTest() {
-        String invalidUrlId = "bbb5555";
+        String invalidShortUrl = "bbb5555";
 
-        assertThrows(IllegalArgumentException.class, () -> service.deleteByShortUrl(invalidUrlId));
+        assertThrows(IllegalArgumentException.class, () -> service.deleteByShortUrl(invalidShortUrl));
     }
 
     @Test
     @DisplayName("Should return link when a valid id is provided")
     void shouldReturnLinkDtoForValidIdTest() {
-        String validUrlId = "abc123";
-        LinkEntity mockEntity = createLinkEntity(validUrlId, "https://example.com");
+        String validShortUrl = "abc123";
+        LinkEntity mockEntity = createLinkEntity(validShortUrl, "https://example.com");
 
-        when(shortUrlValidator.validate(validUrlId)).thenReturn(true);
-        when(repository.findByShortUrl(validUrlId)).thenReturn(Optional.of(mockEntity));
+        when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
+        when(repository.findByShortUrl(validShortUrl)).thenReturn(Optional.of(mockEntity));
 
-        LinkDto resultDto = service.getByShortUrl(validUrlId);
+        LinkDto resultDto = service.getByShortUrl(validShortUrl);
 
-        assertEquals(validUrlId, resultDto.getShortUrl());
+        assertEquals(validShortUrl, resultDto.getShortUrl());
     }
 
     @Test
     @DisplayName("Should throw LinkNotFoundException for non-existing id")
     void shouldThrowLinkNotFoundException_ForNonExistingIdTest() {
-        String nonExistingUrlId = "aaa666";
+        String nonExistingShortUrl = "aaa666";
 
-        when(shortUrlValidator.validate(nonExistingUrlId)).thenReturn(true);
-        when(repository.findByShortUrl(nonExistingUrlId)).thenReturn(Optional.empty());
+        when(shortUrlValidator.validate(nonExistingShortUrl)).thenReturn(true);
+        when(repository.findByShortUrl(nonExistingShortUrl)).thenReturn(Optional.empty());
 
-        assertThrows(LinkNotFoundException.class, () -> service.getByShortUrl(nonExistingUrlId));
+        assertThrows(LinkNotFoundException.class, () -> service.getByShortUrl(nonExistingShortUrl));
     }
 
     @Test
     @DisplayName("Should throw IllegalArgumentException for invalid id")
     void shouldThrowIllegalArgumentException_ForInvalidIdTest() {
-        String invalidUrlId = "aaa666";
+        String invalidShortUrl = "aaa666";
 
-        when(shortUrlValidator.validate(invalidUrlId)).thenReturn(false);
+        when(shortUrlValidator.validate(invalidShortUrl)).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> service.getByShortUrl(invalidUrlId));
+        assertThrows(IllegalArgumentException.class, () -> service.getByShortUrl(invalidShortUrl));
         verify(repository, never()).findByShortUrl(any());
     }
 

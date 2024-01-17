@@ -31,7 +31,7 @@ public class LinkController {
     }
 
     @GetMapping("/{shortUrl}")
-    public ResponseEntity<LinkResponse> getLinkByShortLink(@PathVariable String shortUrl) {
+    public ResponseEntity<LinkResponse> getLinkByShortUrl(@PathVariable String shortUrl) {
         LinkDto linkDto = linkService.getByShortUrl(shortUrl);
         return ResponseEntity.ok(linkMapper.toResponse(linkDto));
     }
