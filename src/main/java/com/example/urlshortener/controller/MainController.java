@@ -16,7 +16,7 @@ public class MainController {
 
     @GetMapping("/{shortUrl}")
     public RedirectView redirectToOriginalUrl(@PathVariable String shortUrl) {
-            LinkDto linkDto = linkService.getById(shortUrl);
+            LinkDto linkDto = linkService.getByShortUrl(shortUrl);
             return new RedirectView(linkDto.getLongUrl());
     }
 }

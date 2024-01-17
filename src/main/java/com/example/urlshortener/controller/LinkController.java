@@ -32,7 +32,7 @@ public class LinkController {
 
     @GetMapping("/{shortUrl}")
     public ResponseEntity<LinkResponse> getLinkByShortLink(@PathVariable String shortUrl) {
-        LinkDto linkDto = linkService.getById(shortUrl);
+        LinkDto linkDto = linkService.getByShortUrl(shortUrl);
         return ResponseEntity.ok(linkMapper.toResponse(linkDto));
     }
 
@@ -51,6 +51,6 @@ public class LinkController {
 
     @DeleteMapping("/{shortUrl}")
     public void deleteLink(@PathVariable String shortUrl) {
-        linkService.deleteById(shortUrl);
+        linkService.deleteByShortUrl(shortUrl);
     }
 }

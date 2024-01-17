@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-class LongLinkValidatorTest {
-    private final LongLinkValidator validator;
+class LongUrlValidatorTest {
+    private final LongUrlValidator validator;
 
-    LongLinkValidatorTest() {
-        validator = new LongLinkValidator();
+    LongUrlValidatorTest() {
+        validator = new LongUrlValidator();
     }
 
     @Test
@@ -29,9 +29,9 @@ class LongLinkValidatorTest {
     @Test
     @DisplayName("When long link is valid then return true")
     void whenLongLinkIsValid2_ThenReturnTrue() {
-        String longLink = "https://www.baeldung.com/hibernate-criteria-queries";
+        String longUrl = "https://www.baeldung.com/hibernate-criteria-queries";
 
-        boolean result = validator.validate(longLink);
+        boolean result = validator.validate(longUrl);
 
         assertTrue(result);
     }

@@ -8,7 +8,7 @@ import java.util.List;
 public interface LinkService {
     List<LinkDto> findAll();
     LinkDto create(LinkDto dto);
-    void deleteById(String id);
-    void update(LinkDto note) throws LinkNotFoundException;
-    LinkDto getById(String id) throws LinkNotFoundException;
+    void deleteByShortUrl(String shortUrl);
+    void update(LinkDto dto) throws LinkNotFoundException;
+    LinkDto getByShortUrl(String shortUrl) throws LinkNotFoundException;
 }

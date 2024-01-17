@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-class ShortLinkValidatorTest {
-    private ShortLinkValidator validator;
+class ShortUrlValidatorTest {
+    private ShortUrlValidator validator;
 
     @BeforeEach
     void init() {
-        validator = new ShortLinkValidator();
+        validator = new ShortUrlValidator();
     }
 
     @Test

@@ -22,17 +22,17 @@ class MainControllerTest {
 
     @Test
     void redirectToOriginalUrl_ShouldRedirectToOriginalUrl_WhenShortLinkExists() throws Exception {
-        String shortLink = "abc123";
-        String longLink = "http://example.com";
+        String shortUrl = "abc123";
+        String longUrl = "http://example.com";
 
         LinkDto linkDto = new LinkDto();
-        linkDto.setShortUrl(shortLink);
-        linkDto.setLongUrl(longLink);
+        linkDto.setShortUrl(shortUrl);
+        linkDto.setLongUrl(longUrl);
 
-        Mockito.when(linkService.getById(shortLink)).thenReturn(linkDto);
+        Mockito.when(linkService.getByShortUrl(shortUrl)).thenReturn(linkDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/{shortLink}", shortLink))
+        mockMvc.perform(MockMvcRequestBuilders.get("/{shortUrl}", shortUrl))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl(longLink));
+                .andExpect(MockMvcResultMatchers.redirectedUrl(longUrl));
     }
 }
