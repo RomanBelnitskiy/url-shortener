@@ -21,15 +21,15 @@ class GeneratorTest {
         pattern = Pattern.compile("[A-Za-z0-9]{8}");
     }
     @ParameterizedTest
-    @MethodSource("randomShortLinkProvider")
-    void testGenerateShortLink(String randShortLink) {
-        Matcher matcher = pattern.matcher(randShortLink);
+    @MethodSource("randomShortUrlProvider")
+    void testGenerateShortLink(String randShortUrl) {
+        Matcher matcher = pattern.matcher(randShortUrl);
 
         assertTrue(matcher.matches());
     }
-    static Stream<String> randomShortLinkProvider() {
+    static Stream<String> randomShortUrlProvider() {
         return Stream
-                .generate(generator::generateShortLink)
+                .generate(generator::generateShortUrl)
                 .limit(10);
     }
 }
