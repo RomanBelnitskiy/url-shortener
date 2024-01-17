@@ -14,9 +14,9 @@ public class MainController {
     @Autowired
     private LinkService linkService;
 
-    @GetMapping("/{shortLink}")
-    public RedirectView redirectToOriginalUrl(@PathVariable String shortLink) {
-            LinkDto linkDto = linkService.getById(shortLink);
-            return new RedirectView(linkDto.getLongLink());
+    @GetMapping("/{shortUrl}")
+    public RedirectView redirectToOriginalUrl(@PathVariable String shortUrl) {
+            LinkDto linkDto = linkService.getById(shortUrl);
+            return new RedirectView(linkDto.getLongUrl());
     }
 }

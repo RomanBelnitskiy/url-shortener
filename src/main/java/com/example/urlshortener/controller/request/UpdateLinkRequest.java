@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class UpdateLinkRequest {
     @NotBlank
     @Size(max = 2048)
-    private String originalLink;
+    private String longUrl;
     @NotBlank
     private LocalDateTime expiredAt;
 }

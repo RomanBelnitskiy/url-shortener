@@ -6,7 +6,6 @@ import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.mapper.LinkMapper;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +30,9 @@ public class LinkController {
                 ));
     }
 
-    @GetMapping("/{shortLink}")
-    public ResponseEntity<LinkResponse> getLinkByShortLink(@PathVariable String shortLink) {
-        LinkDto linkDto = linkService.getById(shortLink);
+    @GetMapping("/{shortUrl}")
+    public ResponseEntity<LinkResponse> getLinkByShortLink(@PathVariable String shortUrl) {
+        LinkDto linkDto = linkService.getById(shortUrl);
         return ResponseEntity.ok(linkMapper.toResponse(linkDto));
     }
 
@@ -44,14 +43,14 @@ public class LinkController {
         return ResponseEntity.ok(linkResponse);
     }
 
-    @PutMapping("/{shortLink}")
-    public void updateLink(@PathVariable String shortLink, @RequestBody UpdateLinkRequest updateLinkRequest) {
-        LinkDto linkDto = linkMapper.toDto(shortLink, updateLinkRequest);
+    @PutMapping("/{shortUrl}")
+    public void updateLink(@PathVariable String shortUrl, @RequestBody UpdateLinkRequest updateLinkRequest) {
+        LinkDto linkDto = linkMapper.toDto(shortUrl, updateLinkRequest);
         linkService.update(linkDto);
     }
 
-    @DeleteMapping("/{shortLink}")
-    public void deleteLink(@PathVariable String shortLink) {
-        linkService.deleteById(shortLink);
+    @DeleteMapping("/{shortUrl}")
+    public void deleteLink(@PathVariable String shortUrl) {
+        linkService.deleteById(shortUrl);
     }
 }

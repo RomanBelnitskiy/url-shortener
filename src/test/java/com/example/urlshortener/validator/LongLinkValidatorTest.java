@@ -19,9 +19,9 @@ class LongLinkValidatorTest {
     @Test
     @DisplayName("When long link is valid then return true")
     void whenLongLinkIsValid_ThenReturnTrue() {
-        String longLink = "https://github.com/RomanBelnitskiy/url-shortener";
+        String longUrl = "https://github.com/RomanBelnitskiy/url-shortener";
 
-        boolean result = validator.validate(longLink);
+        boolean result = validator.validate(longUrl);
 
         assertTrue(result);
     }
@@ -42,8 +42,8 @@ class LongLinkValidatorTest {
             "ABcd8822",
             "https://github1.com/RomanBelnitskiy/url-shortener"
     })
-    void whenLongLinkIsNotValidURL_ThenReturnFalse(String longLink) {
-        boolean result = validator.validate(longLink);
+    void whenLongLinkIsNotValidURL_ThenReturnFalse(String longUrl) {
+        boolean result = validator.validate(longUrl);
 
         assertFalse(result);
     }

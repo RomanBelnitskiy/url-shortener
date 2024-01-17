@@ -38,16 +38,16 @@ public class LinkServiceImpl implements LinkService {
 
         LinkEntity entity = linkMapper.toEntity(link);
 
-        if (!longLinkValidator.validate(entity.getLongLink())) {
+        if (!longLinkValidator.validate(entity.getLongUrl())) {
             throw new IllegalArgumentException("Invalid long link");
         }
 
         do {
-            entity.setShortLink(generator.generateShortLink());
-            if (!shortLinkValidator.validate(entity.getShortLink())) {
+            entity.setShortUrl(generator.generateShortLink());
+            if (!shortLinkValidator.validate(entity.getShortUrl())) {
                 throw new IllegalArgumentException("Invalid short link");
             }
-        } while (linkRepository.existsByShortLink(entity.getShortLink()));
+        } while (linkRepository.existsByShortUrl(entity.getShortUrl()));
 
         return linkMapper.toDto(linkRepository.save(entity));
     }
@@ -65,15 +65,15 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @Transactional
     public void update(LinkDto link) {
-        if (!shortLinkValidator.validate(link.getShortLink())) {
+        if (!shortLinkValidator.validate(link.getShortUrl())) {
             throw new IllegalArgumentException("Invalid short link");
         }
-        LinkEntity entity = linkRepository.findByShortLink(
-                link.getShortLink()).orElseThrow(LinkNotFoundException::new);
+        LinkEntity entity = linkRepository.findByShortUrl(
+                link.getShortUrl()).orElseThrow(LinkNotFoundException::new);
 
-        if (!entity.getLongLink().equals(link.getLongLink())) {
-            if (longLinkValidator.validate(link.getLongLink())) {
-                entity.setLongLink(link.getLongLink());
+        if (!entity.getLongUrl().equals(link.getLongUrl())) {
+            if (longLinkValidator.validate(link.getLongUrl())) {
+                entity.setLongUrl(link.getLongUrl());
             } else {
                 throw new IllegalArgumentException("Invalid long link");
             }
@@ -91,7 +91,7 @@ public class LinkServiceImpl implements LinkService {
             throw new IllegalArgumentException("Invalid id");
         }
 
-        LinkEntity entity = linkRepository.findByShortLink(id).orElseThrow(LinkNotFoundException::new);
+        LinkEntity entity = linkRepository.findByShortUrl(id).orElseThrow(LinkNotFoundException::new);
         return linkMapper.toDto(entity);
     }
 }

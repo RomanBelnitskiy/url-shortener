@@ -39,8 +39,8 @@ class ShortLinkValidatorTest {
     @ParameterizedTest
     @DisplayName("When short link don't consists of 8 characters or numbers then return false")
     @ValueSource(strings = {"", "asd", " 1234asd", ";:@#,.", "        "})
-    void whenShortLinkIsNotValid_ThenReturnFalse(String shortLink) {
-        boolean result = validator.validate(shortLink);
+    void whenShortLinkIsNotValid_ThenReturnFalse(String shortUrl) {
+        boolean result = validator.validate(shortUrl);
 
         assertFalse(result);
     }

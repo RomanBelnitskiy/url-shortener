@@ -1,7 +1,5 @@
 package com.example.urlshortener.controller;
 
-import com.example.urlshortener.data.entity.LinkEntity;
-import com.example.urlshortener.data.repository.LinkRepository;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
 import org.junit.jupiter.api.Test;
@@ -12,8 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Optional;
 
 @WebMvcTest(MainController.class)
 class MainControllerTest {
@@ -30,8 +26,8 @@ class MainControllerTest {
         String longLink = "http://example.com";
 
         LinkDto linkDto = new LinkDto();
-        linkDto.setShortLink(shortLink);
-        linkDto.setLongLink(longLink);
+        linkDto.setShortUrl(shortLink);
+        linkDto.setLongUrl(longLink);
 
         Mockito.when(linkService.getById(shortLink)).thenReturn(linkDto);
 
