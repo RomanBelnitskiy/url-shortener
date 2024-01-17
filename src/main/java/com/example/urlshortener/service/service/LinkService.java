@@ -11,4 +11,5 @@ public interface LinkService {
     void deleteByShortUrl(String shortUrl);
     void update(LinkDto dto) throws LinkNotFoundException;
     LinkDto getByShortUrl(String shortUrl) throws LinkNotFoundException;
+    LinkDto getByShortUrlAndIncreaseTransitions(String shortUrl);
 }
