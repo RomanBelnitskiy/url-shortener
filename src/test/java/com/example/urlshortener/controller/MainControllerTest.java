@@ -7,6 +7,7 @@ import com.example.urlshortener.service.service.LinkService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(MainController.class)
+@WebMvcTest(value = MainController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class MainControllerTest {
 
     @Autowired
@@ -70,7 +71,7 @@ class MainControllerTest {
 
         mockMvc.perform(get("/{shortUrl}", shortUrl))
                 .andExpect(status().is(404))
-                .andExpect(content().string(containsString("Link not found!")));
+                .andExpect(content().string(containsString("Link not found.")));
     }
 
     @Test

@@ -1,13 +1,13 @@
 INSERT INTO link (short_url, original_url, created_at, expired_at, visit_count)
 VALUES
   ('eu6augue', 'http://walmart.com/user/110?q=11', '2020-08-17 08:56:29', '2024-03-24 21:03:08', 7268),
-  ('vitae2se', 'https://facebook.com/settings?page=1&offset=1', '2020-01-04 22:05:00', '2025-08-25 06:58:44', 1396),
-  ('blandit1', 'https://guardian.co.uk/fr?page=1&offset=1', '2022-11-22 10:48:23', '2024-03-19 17:08:07', 8564),
-  ('in70dolo', 'http://bbc.co.uk/en-ca?q=4', '2016-08-13 01:47:51', '2024-09-26 13:43:59', 7320),
+  ('vitae2se', 'https://facebook.com/settings?page=1&offset=1', '2020-01-04 22:05:00', '2022-08-25 06:58:44', 1396),
+  ('shorturl', 'https://github.com/RomanBelnitskiy/url-shortener', '2022-11-22 10:48:23', '2024-03-19 17:08:07', 8564),
+  ('expired0', 'http://bbc.co.uk/en-ca?q=4', '2016-08-13 01:47:51', '2020-09-26 13:43:59', 7320),
   ('nascetur', 'https://bbc.co.uk/fr?search=1&q=de', '2023-01-11 05:42:44', '2025-01-04 21:39:31', 8374),
   ('pede45Cr', 'https://youtube.com/sub?page=1&offset=1', '2022-08-14 18:18:35', '2024-09-15 06:02:18', 3682),
   ('ac1turpi', 'http://twitter.com/one?ab=441&aad=2', '2019-11-14 17:15:13', '2024-05-03 05:48:22', 3066),
-  ('parturif', 'http://nytimes.com/settings?str=se', '2022-11-26 20:32:17', '2025-11-18 19:38:15', 7627),
+  ('expdlink', 'http://nytimes.com/settings?str=se', '2022-11-26 20:32:17', '2023-11-18 19:38:15', 7627),
   ('diam1y7j', 'https://whatsapp.com/en-us?gi=100', '2017-08-17 02:49:37', '2026-02-17 01:25:27', 8814),
   ('lobortii', 'http://zoom.us/group/9?client=g', '2017-07-31 07:02:12', '2024-03-28 02:57:14', 1402),
   ('risus4h7', 'https://whatsapp.com/sub?search=1&q=de', '2022-02-17 05:30:59', '2026-01-13 01:52:38', 5402),
