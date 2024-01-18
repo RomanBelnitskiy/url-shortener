@@ -1,4 +1,4 @@
-package com.example.urlshortener.exception_hendler;
+package com.example.urlshortener.controller;
 
 import com.example.urlshortener.exception.LinkNotFoundException;
 import org.springframework.http.HttpStatus;
