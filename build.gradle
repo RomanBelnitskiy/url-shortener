@@ -36,7 +36,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.16.1'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
 }
 
 tasks.named('test') {
