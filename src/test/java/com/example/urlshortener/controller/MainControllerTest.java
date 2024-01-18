@@ -70,7 +70,7 @@ class MainControllerTest {
 
         mockMvc.perform(get("/{shortUrl}", shortUrl))
                 .andExpect(status().is(404))
-                .andExpect(content().string(containsString("Link not found!")));
+                .andExpect(content().string(containsString("Link not found.")));
     }
 
     @Test
