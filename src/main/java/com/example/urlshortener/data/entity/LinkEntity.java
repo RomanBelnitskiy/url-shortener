@@ -29,4 +29,9 @@ public class LinkEntity {
 
     @Column(name = "visit_count")
     private long transitions;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    private UserEntity user;
+
 }
