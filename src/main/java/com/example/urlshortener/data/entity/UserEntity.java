@@ -12,13 +12,11 @@ import java.util.List;
 @Data
 @Entity
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "users")
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final Long id;
     @Column(name = "username", nullable = false)
     private String username;
     @Column(name = "password", nullable = false)
