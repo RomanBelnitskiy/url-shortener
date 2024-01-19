@@ -1,10 +1,10 @@
 package com.example.urlshortener.controller.response.auth;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthResponse {
 
     private String token;
@@ -13,14 +13,4 @@ public class AuthResponse {
     private String email;
     private String role;
 
-    public AuthResponse() {
-    }
-
-    public AuthResponse(String token, Long id, String username, String email, String role) {
-        this.token = token;
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role = role;
-    }
 }
