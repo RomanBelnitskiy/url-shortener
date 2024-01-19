@@ -14,13 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -30,6 +33,9 @@ class LinkControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @MockBean
     LinkService linkService;
@@ -46,6 +52,7 @@ class LinkControllerTest {
 
     @Test
     @DisplayName("Should get all link")
+    @WithMockUser(username = "test", roles = {"ADMIN"})
     void getAllLink() throws Exception {
         List<LinkDto> linkDtos = getlinkDtos();
         List<LinkResponse> linkResponses = getLinkResponses();
@@ -53,13 +60,15 @@ class LinkControllerTest {
         Mockito.when(linkService.findAll()).thenReturn(linkDtos);
         Mockito.when(linkMapper.toResponses(linkDtos)).thenReturn(linkResponses);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link")
+                        .with(csrf()))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
     @Test
     @DisplayName("Should get link by valid id")
+    @WithMockUser(username = "test", roles = {"ADMIN"})
     void getLinkByShortUrl() throws Exception {
         String shortUrl = "example";
         String longUrl = "http://example.com";
@@ -75,7 +84,8 @@ class LinkControllerTest {
         Mockito.when(linkService.getByShortUrl(shortUrl)).thenReturn(linkDto);
         Mockito.when(linkMapper.toResponse(linkDto)).thenReturn(linkResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link/{shortLink}", shortUrl))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link/{shortLink}", shortUrl)
+                        .with(csrf()))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
@@ -88,6 +98,7 @@ class LinkControllerTest {
 
     @Test
     @DisplayName("Should create link if not exists link")
+    @WithMockUser(username = "test", roles = {"ADMIN"})
     void createLink() throws Exception {
         CreateLinkRequest createLinkRequest = new CreateLinkRequest();
         createLinkRequest.setLongUrl("http://example.com");
@@ -104,7 +115,8 @@ class LinkControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/link")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createLinkRequest))
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
@@ -113,6 +125,7 @@ class LinkControllerTest {
 
     @Test
     @DisplayName("Should update link by valid id")
+    @WithMockUser(username = "test", roles = {"ADMIN"})
     void updateLink() throws Exception {
         String shortLink = "example";
         UpdateLinkRequest linkRequest = new UpdateLinkRequest();
@@ -125,13 +138,15 @@ class LinkControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/link/{shortLink}", shortLink)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(linkRequest))
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
     @Test
     @DisplayName("Should delete link by valid id")
+    @WithMockUser(username = "test", roles = {"ADMIN"})
     void deleteLink() throws Exception {
         String shortUrl = "example";
         String longUrl = "http://example.com";
@@ -142,7 +157,8 @@ class LinkControllerTest {
 
         Mockito.doNothing().when(linkService).deleteByShortUrl(shortUrl);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/link/{shortLink}", shortUrl))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/link/{shortLink}", shortUrl)
+                        .with(csrf()))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
