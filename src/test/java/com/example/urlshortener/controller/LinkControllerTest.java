@@ -1,5 +1,6 @@
 package com.example.urlshortener.controller;
 
+import com.example.urlshortener.config.AuthFilter;
 import com.example.urlshortener.controller.request.CreateLinkRequest;
 import com.example.urlshortener.controller.request.UpdateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
@@ -13,6 +14,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@WebMvcTest(controllers = {LinkController.class})
+@WebMvcTest(
+        controllers = {LinkController.class},
+        excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthFilter.class)}
+)
 class LinkControllerTest {
 
     @Autowired
