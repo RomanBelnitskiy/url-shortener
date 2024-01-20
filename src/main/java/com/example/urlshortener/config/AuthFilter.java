@@ -30,7 +30,7 @@ public class AuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final long userId;
+        final Long userId;
         final String username;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -40,9 +40,11 @@ public class AuthFilter extends OncePerRequestFilter {
 
         username = jwtService.extractUsername(jwt);
         userId = jwtService.extractUserId(jwt);
-        request.setAttribute("userId", userId);
+        if (userId != null) {
+            request.setAttribute("userId", userId);
+        }
 
-        if (userId != 0 && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
