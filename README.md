@@ -13,6 +13,8 @@
 >
 >  DB_PASSWORD is the database password. 
 >  
+>  SECRET_KEY is the secret key, to protect the jwt token, encoded by the Base64 algorithm in the form of a 256-bit hex string.
+> 
 >  Also, add a VM launch parameter -Dspring.profiles.active=prod as shown at image below.
 >  
 > ![VM option](https://github.com/RomanBelnitskiy/url-shortener/blob/props/src/main/resources/images/prod-conf.png "VM option")

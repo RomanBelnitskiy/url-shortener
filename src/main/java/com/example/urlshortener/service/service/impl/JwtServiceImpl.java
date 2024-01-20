@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
+    @Value("${jwt.secret_key}")
     private String SECRET_KEY;
     @Value("${jwt.expiration.time_in_millis}")
     private long JWT_EXPIRATION_TIME;
