@@ -11,17 +11,22 @@ import com.example.urlshortener.service.service.LinkService;
 import com.example.urlshortener.validator.LongUrlValidator;
 import com.example.urlshortener.validator.ShortUrlValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = {"links"})
 public class LinkServiceImpl implements LinkService {
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
@@ -38,7 +43,7 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @Transactional
     public LinkDto create(LinkDto link) {
-        Objects.requireNonNull(link);
+        requireNonNull(link);
 
         LinkEntity entity = linkMapper.toEntity(link);
 
@@ -56,6 +61,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#shortUrl")
     public void deleteByShortUrl(String shortUrl) {
         validateShortUrl(shortUrl);
 
@@ -64,6 +70,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#link.shortUrl")
     public void update(LinkDto link) {
         validateShortUrl(link.getShortUrl());
         LinkEntity entity = linkRepository.findByShortUrl(
@@ -94,6 +101,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Cacheable(key = "#shortUrl", unless = "#result == null")
     public LinkDto getByShortUrlAndIncreaseTransitions(String shortUrl) {
         validateShortUrl(shortUrl);
 
@@ -107,6 +115,15 @@ public class LinkServiceImpl implements LinkService {
         entity.setTransitions(entity.getTransitions() + 1);
 
         return linkMapper.toDto(entity);
+    }
+
+    @Override
+    @Transactional
+    public void updateTransitions(String shortUrl, Long additionalTransitions) {
+        validateShortUrl(shortUrl);
+        if (additionalTransitions == null || additionalTransitions <= 0) return;
+
+        linkRepository.increaseTransitionsBy(shortUrl, additionalTransitions);
     }
 
     private void validateShortUrl(String shortUrl) {
