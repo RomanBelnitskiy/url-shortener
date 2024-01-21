@@ -4,7 +4,10 @@ import com.example.urlshortener.exception.LinkExpiredException;
 import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,19 +16,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpStatus.*;
 
 @Controller
+@Slf4j
 public class MainController {
-
     @Autowired
     private LinkService linkService;
+    @Autowired
+    private CacheManager cacheManager;
 
     @GetMapping("/{shortUrl}")
     public RedirectView redirect(@PathVariable String shortUrl) {
-            LinkDto linkDto = linkService.getByShortUrlAndIncreaseTransitions(shortUrl);
+        try {
+            LinkDto link = attemptGetLinkFromCache(shortUrl);
+            if (link != null) {
+                updateTransitions(shortUrl);
+                return new RedirectView(link.getLongUrl());
+            }
+        } catch (NullPointerException e) {}
 
-            return new RedirectView(linkDto.getLongUrl());
+        LinkDto linkDto = linkService.getByShortUrlAndIncreaseTransitions(shortUrl);
+
+        return new RedirectView(linkDto.getLongUrl());
+    }
+
+    private LinkDto attemptGetLinkFromCache(String shortUrl) {
+        Cache linksCache = cacheManager.getCache("links");
+        return requireNonNull(linksCache).get(shortUrl, LinkDto.class);
+    }
+
+    private void updateTransitions(String shortUrl) {
+        Cache transitionsCache = cacheManager.getCache("transitions");
+        Long transitions = transitionsCache.get(shortUrl, Long.class);
+        if (transitions != null) {
+            transitions++;
+            transitionsCache.put(shortUrl, transitions);
+        } else {
+            transitionsCache.put(shortUrl, 1L);
+        }
     }
 
     @ExceptionHandler(LinkNotFoundException.class)
