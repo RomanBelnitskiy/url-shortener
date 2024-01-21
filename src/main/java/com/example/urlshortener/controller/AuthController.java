@@ -3,6 +3,7 @@ package com.example.urlshortener.controller;
 import com.example.urlshortener.controller.request.RegisterRequest;
 import com.example.urlshortener.controller.request.auth.AuthRequest;
 import com.example.urlshortener.controller.response.auth.AuthResponse;
+import com.example.urlshortener.service.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
