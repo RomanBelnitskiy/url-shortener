@@ -12,9 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
         repository.save(user);
 
-        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(Map.of("userId", user.getId()), user);
 
         return new AuthResponse(jwtToken);
     }
@@ -45,8 +46,8 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        String jwtToken = jwtService.generateToken(user);
+        UserEntity user = (UserEntity) authentication.getPrincipal();
+        String jwtToken = jwtService.generateToken(Map.of("userId", user.getId()), user);
 
         return new AuthResponse(jwtToken);
     }
