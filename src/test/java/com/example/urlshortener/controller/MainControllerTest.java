@@ -10,11 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +31,10 @@ class MainControllerTest {
 
     @MockBean
     private LinkService linkService;
+    @MockBean
+    private CacheManager cacheManager;
+    @MockBean
+    private Cache cache;
 
     @Test
     @DisplayName("When short url is valid and link hasn't expired then does redirect")
@@ -41,6 +48,9 @@ class MainControllerTest {
         linkDto.setCreatedAt(LocalDateTime.now());
         linkDto.setExpiredAt(LocalDateTime.now().plusMonths(1));
 
+        when(cacheManager.getCache("links")).thenReturn(cache);
+        when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
+
         when(linkService.getByShortUrlAndIncreaseTransitions(shortUrl)).thenReturn(linkDto);
 
         mockMvc.perform(get("/{shortUrl}", shortUrl))
@@ -52,6 +62,9 @@ class MainControllerTest {
     @DisplayName("Throws IllegalArgumentException when short link is not valid")
     void redirect_ThrowsIllegalArgumentException_WhenShortLinkIsNotValid() throws Exception {
         String shortUrl = "abc123";
+
+        when(cacheManager.getCache("links")).thenReturn(cache);
+        when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
 
         when(linkService.getByShortUrlAndIncreaseTransitions(shortUrl))
                 .thenThrow(new IllegalArgumentException("Invalid short url"));
@@ -66,6 +79,9 @@ class MainControllerTest {
     void redirect_ThrowsLinkNotFoundException_WhenCanNotFindLink() throws Exception {
         String shortUrl = "abcd1234";
 
+        when(cacheManager.getCache("links")).thenReturn(cache);
+        when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
+
         when(linkService.getByShortUrlAndIncreaseTransitions(shortUrl))
                 .thenThrow(new LinkNotFoundException());
 
@@ -78,6 +94,9 @@ class MainControllerTest {
     @DisplayName("Throws LinkExpiredException when link has expired")
     void redirect_ThrowsLinkExpiredException_WhenLinkHasExpired() throws Exception {
         String shortUrl = "abcd1234";
+
+        when(cacheManager.getCache("links")).thenReturn(cache);
+        when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
 
         when(linkService.getByShortUrlAndIncreaseTransitions(anyString()))
                 .thenThrow(new LinkExpiredException());
