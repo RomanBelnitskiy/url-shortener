@@ -30,8 +30,7 @@ public class LinkEntity {
     @Column(name = "visit_count")
     private long transitions;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable=false)
     private UserEntity user;
-
 }
