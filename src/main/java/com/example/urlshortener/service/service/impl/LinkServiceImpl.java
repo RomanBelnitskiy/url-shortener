@@ -1,7 +1,9 @@
 package com.example.urlshortener.service.service.impl;
 
 import com.example.urlshortener.data.entity.LinkEntity;
+import com.example.urlshortener.data.entity.UserEntity;
 import com.example.urlshortener.data.repository.LinkRepository;
+import com.example.urlshortener.data.repository.UserRepository;
 import com.example.urlshortener.exception.LinkExpiredException;
 import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.mapper.LinkMapper;
@@ -33,16 +35,19 @@ public class LinkServiceImpl implements LinkService {
     private final ShortUrlValidator shortUrlValidator;
     private final LongUrlValidator longUrlValidator;
     private final Generator generator;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<LinkDto> findAll() {
-        return linkMapper.toDtos(linkRepository.findAll());
+    public List<LinkDto> findAll(Long userId) {
+        return linkMapper.toDtos(
+                linkRepository.findAll(userId)
+        );
     }
 
     @Override
     @Transactional
-    public LinkDto create(LinkDto link) {
+    public LinkDto create(LinkDto link, Long userId) {
         requireNonNull(link);
 
         LinkEntity entity = linkMapper.toEntity(link);
@@ -56,25 +61,30 @@ public class LinkServiceImpl implements LinkService {
             validateShortUrl(entity.getShortUrl());
         } while (linkRepository.existsByShortUrl(entity.getShortUrl()));
 
+        UserEntity user = userRepository.getReferenceById(userId);
+        entity.setUser(user);
+
         return linkMapper.toDto(linkRepository.save(entity));
     }
 
     @Override
     @Transactional
     @CacheEvict(key = "#shortUrl")
-    public void deleteByShortUrl(String shortUrl) {
+    public void deleteByShortUrl(String shortUrl, Long userId) {
         validateShortUrl(shortUrl);
 
-        linkRepository.deleteById(shortUrl);
+        linkRepository.deleteByShortUrl(shortUrl, userId);
     }
 
     @Override
     @Transactional
     @CacheEvict(key = "#link.shortUrl")
-    public void update(LinkDto link) {
+    public void update(LinkDto link, Long userId) {
         validateShortUrl(link.getShortUrl());
         LinkEntity entity = linkRepository.findByShortUrl(
-                link.getShortUrl()).orElseThrow(LinkNotFoundException::new);
+                link.getShortUrl(),
+                userId
+        ).orElseThrow(LinkNotFoundException::new);
 
         if (!entity.getLongUrl().equals(link.getLongUrl())) {
             if (longUrlValidator.validate(link.getLongUrl())) {
@@ -91,10 +101,10 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional(readOnly = true)
-    public LinkDto getByShortUrl(String shortUrl) {
+    public LinkDto getByShortUrl(String shortUrl, Long userId) {
         validateShortUrl(shortUrl);
 
-        LinkEntity entity = linkRepository.findByShortUrl(shortUrl)
+        LinkEntity entity = linkRepository.findByShortUrl(shortUrl, userId)
                 .orElseThrow(LinkNotFoundException::new);
         return linkMapper.toDto(entity);
     }
