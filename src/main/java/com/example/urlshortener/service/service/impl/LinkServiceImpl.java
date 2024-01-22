@@ -70,10 +70,10 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @Transactional
     @CacheEvict(key = "#shortUrl")
-    public void deleteByShortUrl(String shortUrl) {
+    public void deleteByShortUrl(String shortUrl, Long userId) {
         validateShortUrl(shortUrl);
 
-        linkRepository.deleteById(shortUrl);
+        linkRepository.deleteByShortUrl(shortUrl, userId);
     }
 
     @Override

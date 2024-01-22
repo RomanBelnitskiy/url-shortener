@@ -60,7 +60,10 @@ public class LinkController {
     }
 
     @DeleteMapping("/{shortUrl}")
-    public void deleteLink(@PathVariable String shortUrl) {
-        linkService.deleteByShortUrl(shortUrl);
+    public void deleteLink(
+            @PathVariable String shortUrl,
+            @RequestAttribute Long userId
+    ) {
+        linkService.deleteByShortUrl(shortUrl, userId);
     }
 }

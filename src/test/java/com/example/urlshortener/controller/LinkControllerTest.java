@@ -163,10 +163,11 @@ class LinkControllerTest {
         linkDto.setShortUrl(shortUrl);
         linkDto.setLongUrl(longUrl);
 
-        doNothing().when(linkService).deleteByShortUrl(shortUrl);
+        doNothing().when(linkService).deleteByShortUrl(shortUrl, 1L);
 
         mockMvc.perform(delete("/api/v1/link/{shortLink}", shortUrl)
-                        .with(csrf()))
+                        .with(csrf())
+                        .requestAttr("userId", 1L))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }

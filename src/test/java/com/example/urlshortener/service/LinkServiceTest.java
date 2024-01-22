@@ -199,9 +199,9 @@ class LinkServiceTest {
         String validShortUrl = "abc123";
 
         when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
-        service.deleteByShortUrl(validShortUrl);
+        service.deleteByShortUrl(validShortUrl, 1L);
 
-        verify(repository, times(1)).deleteById(validShortUrl);
+        verify(repository, times(1)).deleteByShortUrl(validShortUrl, 1L);
     }
 
     @Test
@@ -209,7 +209,10 @@ class LinkServiceTest {
     void shouldThrowExceptionForInvalidIdTest() {
         String invalidShortUrl = "bbb5555";
 
-        assertThrows(IllegalArgumentException.class, () -> service.deleteByShortUrl(invalidShortUrl));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.deleteByShortUrl(invalidShortUrl, 1L)
+        );
     }
 
     @Test

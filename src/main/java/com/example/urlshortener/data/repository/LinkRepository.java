@@ -21,12 +21,14 @@ public interface LinkRepository extends JpaRepository<LinkEntity, String> {
     boolean existsByShortUrl(String shortUrl);
 
     @Modifying
-    @Query(value = "update link set visit_count = visit_count + :transitions where short_url = :shortUrl",
+    @Query(value = "UPDATE link SET visit_count = visit_count + :transitions WHERE short_url = :shortUrl",
             nativeQuery = true)
     void increaseTransitionsBy(@Param("shortUrl") String shortUrl, @Param("transitions") Long additionalTransitions);
 
     @Query(value = "SELECT le FROM LinkEntity le WHERE le.user.id = :userId")
     List<LinkEntity> findAll(Long userId);
 
-
+    @Modifying
+    @Query(value = "DELETE FROM link WHERE short_url = :shortUrl AND user_id = :userId", nativeQuery = true)
+    void deleteByShortUrl(String shortUrl, Long userId);
 }
