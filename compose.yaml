@@ -1,0 +1,27 @@
+services:
+  app:
+    image: 'url-shortener:latest'
+    container_name: url-shortener
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "443:9999"
+      - "80:9999"
+    env_file: ./prod.env
+    environment:
+      - JAVA_OPTS=$JAVA_OPTS
+      - DB_URL=$DB_URL
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - SECRET_KEY=$SECRET_KEY
+  db:
+    image: "postgres:15-alpine"
+    container_name: db
+    env_file: ./prod.env
+    environment:
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    ports:
+      - "5432:5432"
