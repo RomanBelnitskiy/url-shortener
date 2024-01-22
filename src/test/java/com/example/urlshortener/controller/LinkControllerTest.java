@@ -51,7 +51,7 @@ class LinkControllerTest {
     @MockBean
     LinkMapper linkMapper;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void init() {
