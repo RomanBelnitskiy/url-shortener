@@ -128,7 +128,7 @@ class LinkServiceTest {
 
         when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> service.update(inputDto));
+        assertThrows(IllegalArgumentException.class, () -> service.update(inputDto, 1L));
     }
 
     @Test
@@ -137,9 +137,9 @@ class LinkServiceTest {
         LinkDto inputDto = createLinkDto("abc123", "https://example.com");
 
         when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
-        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.empty());
+        when(repository.findByShortUrl(inputDto.getShortUrl(), 1L)).thenReturn(Optional.empty());
 
-        assertThrows(LinkNotFoundException.class, () -> service.update(inputDto));
+        assertThrows(LinkNotFoundException.class, () -> service.update(inputDto, 1L));
     }
 
     @Test
@@ -149,10 +149,10 @@ class LinkServiceTest {
         LinkEntity expectedEntity = createLinkEntity("abc123", "https://invalid-link.com");
 
         when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
-        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.of(expectedEntity));
+        when(repository.findByShortUrl(inputDto.getShortUrl(), 1L)).thenReturn(Optional.of(expectedEntity));
         when(longUrlValidator.validate(expectedEntity.getLongUrl())).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> service.update(inputDto));
+        assertThrows(IllegalArgumentException.class, () -> service.update(inputDto, 1L));
     }
 
     @Test
@@ -164,13 +164,13 @@ class LinkServiceTest {
         LinkEntity originalEntity = createLinkEntity(shortLink, "https://example.com");
 
         when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
-        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.of(originalEntity));
+        when(repository.findByShortUrl(inputDto.getShortUrl(), 1L)).thenReturn(Optional.of(originalEntity));
         when(longUrlValidator.validate(newLongUrl)).thenReturn(true);
 
         inputDto.setLongUrl(newLongUrl);
-        service.update(inputDto);
+        service.update(inputDto, 1L);
 
-        verify(repository, times(1)).findByShortUrl(shortLink);
+        verify(repository, times(1)).findByShortUrl(shortLink, 1L);
         assertEquals(newLongUrl, originalEntity.getLongUrl());
     }
 
@@ -183,12 +183,12 @@ class LinkServiceTest {
         LinkEntity originalEntity = createLinkEntity(shortUrl, "https://example.com");
 
         when(shortUrlValidator.validate(inputDto.getShortUrl())).thenReturn(true);
-        when(repository.findByShortUrl(inputDto.getShortUrl())).thenReturn(Optional.of(originalEntity));
+        when(repository.findByShortUrl(inputDto.getShortUrl(), 1L)).thenReturn(Optional.of(originalEntity));
 
         inputDto.setExpiredAt(newExpiredAt);
-        service.update(inputDto);
+        service.update(inputDto, 1L);
 
-        verify(repository, times(1)).findByShortUrl(shortUrl);
+        verify(repository, times(1)).findByShortUrl(shortUrl, 1L);
 
         assertEquals(newExpiredAt, originalEntity.getExpiredAt());
     }

@@ -50,9 +50,13 @@ public class LinkController {
     }
 
     @PutMapping("/{shortUrl}")
-    public void updateLink(@PathVariable String shortUrl, @RequestBody UpdateLinkRequest updateLinkRequest) {
+    public void updateLink(
+            @PathVariable String shortUrl,
+            @RequestBody UpdateLinkRequest updateLinkRequest,
+            @RequestAttribute Long userId
+    ) {
         LinkDto linkDto = linkMapper.toDto(shortUrl, updateLinkRequest);
-        linkService.update(linkDto);
+        linkService.update(linkDto, userId);
     }
 
     @DeleteMapping("/{shortUrl}")

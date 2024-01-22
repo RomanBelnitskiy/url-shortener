@@ -79,10 +79,12 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @Transactional
     @CacheEvict(key = "#link.shortUrl")
-    public void update(LinkDto link) {
+    public void update(LinkDto link, Long userId) {
         validateShortUrl(link.getShortUrl());
         LinkEntity entity = linkRepository.findByShortUrl(
-                link.getShortUrl()).orElseThrow(LinkNotFoundException::new);
+                link.getShortUrl(),
+                userId
+        ).orElseThrow(LinkNotFoundException::new);
 
         if (!entity.getLongUrl().equals(link.getLongUrl())) {
             if (longUrlValidator.validate(link.getLongUrl())) {

@@ -9,8 +9,9 @@ import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,8 +20,6 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
@@ -28,8 +27,10 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @WebMvcTest(
@@ -67,10 +68,10 @@ class LinkControllerTest {
         when(linkService.findAll(1L)).thenReturn(linkDtos);
         when(linkMapper.toResponses(linkDtos)).thenReturn(linkResponses);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link")
+        mockMvc.perform(get("/api/v1/link")
                         .with(csrf()).requestAttr("userId", 1L))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -91,10 +92,10 @@ class LinkControllerTest {
         when(linkService.getByShortUrl(shortUrl, 1L)).thenReturn(linkDto);
         when(linkMapper.toResponse(linkDto)).thenReturn(linkResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link/{shortLink}", shortUrl)
+        mockMvc.perform(get("/api/v1/link/{shortLink}", shortUrl)
                         .with(csrf()).requestAttr("userId", 1L))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
                 .andExpect(jsonPath("$.longUrl").value(linkResponse.getLongUrl()))
                 .andExpect(jsonPath("$.createdAt").value(linkResponse.getCreatedAt()))
@@ -117,14 +118,14 @@ class LinkControllerTest {
 
         when(linkMapper.toResponse(any())).thenReturn(linkResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/link")
+        mockMvc.perform(post("/api/v1/link")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createLinkRequest))
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .requestAttr("userId", 1L))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
                 .andExpect(jsonPath("$.longUrl").value(linkResponse.getLongUrl()));
     }
@@ -139,15 +140,16 @@ class LinkControllerTest {
         linkRequest.setExpiredAt(LocalDateTime.now().plusMinutes(1));
 
         LinkDto linkDto = linkMapper.toDto(shortLink, linkRequest);
-        doNothing().when(linkService).update(linkDto);
+        doNothing().when(linkService).update(linkDto, 1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/link/{shortLink}", shortLink)
+        mockMvc.perform(put("/api/v1/link/{shortLink}", shortLink)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(linkRequest))
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
+                        .with(csrf())
+                        .requestAttr("userId", 1L))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -163,10 +165,10 @@ class LinkControllerTest {
 
         doNothing().when(linkService).deleteByShortUrl(shortUrl);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/link/{shortLink}", shortUrl)
+        mockMvc.perform(delete("/api/v1/link/{shortLink}", shortUrl)
                         .with(csrf()))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(status().is2xxSuccessful());
     }
 
 

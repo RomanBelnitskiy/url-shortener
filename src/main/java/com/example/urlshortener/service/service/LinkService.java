@@ -9,8 +9,8 @@ public interface LinkService {
     List<LinkDto> findAll(Long userId);
     LinkDto create(LinkDto dto, Long userId);
     void deleteByShortUrl(String shortUrl);
-    void update(LinkDto dto) throws LinkNotFoundException;
-    LinkDto getByShortUrl(String shortUrl, Long userId) throws LinkNotFoundException;
+    void update(LinkDto dto, Long userId);
+    LinkDto getByShortUrl(String shortUrl, Long userId);
     LinkDto getByShortUrlAndIncreaseTransitions(String shortUrl);
     void updateTransitions(String shortUrl, Long transitions);
 }
