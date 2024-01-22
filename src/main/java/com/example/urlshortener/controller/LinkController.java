@@ -23,23 +23,29 @@ public class LinkController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LinkResponse>> getAllLink() {
+    public ResponseEntity<List<LinkResponse>> getAllLink(@RequestAttribute Long userId) {
         return ResponseEntity.ok(
                 linkMapper.toResponses(
-                        linkService.findAll()
+                        linkService.findAll(userId)
                 ));
     }
 
     @GetMapping("/{shortUrl}")
-    public ResponseEntity<LinkResponse> getLinkByShortUrl(@PathVariable String shortUrl) {
-        LinkDto linkDto = linkService.getByShortUrl(shortUrl);
+    public ResponseEntity<LinkResponse> getLinkByShortUrl(
+            @PathVariable String shortUrl,
+            @RequestAttribute Long userId
+    ) {
+        LinkDto linkDto = linkService.getByShortUrl(shortUrl, userId);
         return ResponseEntity.ok(linkMapper.toResponse(linkDto));
     }
 
     @PostMapping
-    public ResponseEntity<LinkResponse> createLink(@RequestBody CreateLinkRequest linkRequest) {
+    public ResponseEntity<LinkResponse> createLink(
+            @RequestBody CreateLinkRequest linkRequest,
+            @RequestAttribute Long userId
+    ) {
         LinkDto linkDto = linkMapper.toDto(linkRequest);
-        LinkResponse linkResponse = linkMapper.toResponse(linkService.create(linkDto));
+        LinkResponse linkResponse = linkMapper.toResponse(linkService.create(linkDto, userId));
         return ResponseEntity.ok(linkResponse);
     }
 

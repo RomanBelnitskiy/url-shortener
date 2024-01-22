@@ -26,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -63,11 +64,11 @@ class LinkControllerTest {
         List<LinkDto> linkDtos = getlinkDtos();
         List<LinkResponse> linkResponses = getLinkResponses();
 
-        Mockito.when(linkService.findAll()).thenReturn(linkDtos);
-        Mockito.when(linkMapper.toResponses(linkDtos)).thenReturn(linkResponses);
+        when(linkService.findAll(1L)).thenReturn(linkDtos);
+        when(linkMapper.toResponses(linkDtos)).thenReturn(linkResponses);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link")
-                        .with(csrf()))
+                        .with(csrf()).requestAttr("userId", 1L))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
@@ -87,11 +88,11 @@ class LinkControllerTest {
         linkResponse.setShortUrl(shortUrl);
         linkResponse.setLongUrl(longUrl);
 
-        Mockito.when(linkService.getByShortUrl(shortUrl)).thenReturn(linkDto);
-        Mockito.when(linkMapper.toResponse(linkDto)).thenReturn(linkResponse);
+        when(linkService.getByShortUrl(shortUrl, 1L)).thenReturn(linkDto);
+        when(linkMapper.toResponse(linkDto)).thenReturn(linkResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/link/{shortLink}", shortUrl)
-                        .with(csrf()))
+                        .with(csrf()).requestAttr("userId", 1L))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
@@ -111,18 +112,17 @@ class LinkControllerTest {
         createLinkRequest.setExpiredAt(LocalDateTime.now());
 
         LinkResponse linkResponse = new LinkResponse();
-        linkResponse.setLongUrl("http://example.com");
-        linkResponse.setExpiredAt(LocalDateTime.now());
+        linkResponse.setShortUrl("qwertyui");
+        linkResponse.setLongUrl("http://example222.com");
 
-        LinkDto createdLinkDto = linkMapper.toDto(createLinkRequest);
-        Mockito.when(linkService.create(Mockito.any())).thenReturn(createdLinkDto);
-        Mockito.when(linkMapper.toResponse(createdLinkDto)).thenReturn(linkResponse);
+        when(linkMapper.toResponse(any())).thenReturn(linkResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/link")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createLinkRequest))
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
+                        .with(csrf())
+                        .requestAttr("userId", 1L))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
@@ -139,7 +139,7 @@ class LinkControllerTest {
         linkRequest.setExpiredAt(LocalDateTime.now().plusMinutes(1));
 
         LinkDto linkDto = linkMapper.toDto(shortLink, linkRequest);
-        Mockito.doNothing().when(linkService).update(linkDto);
+        doNothing().when(linkService).update(linkDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/link/{shortLink}", shortLink)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -161,7 +161,7 @@ class LinkControllerTest {
         linkDto.setShortUrl(shortUrl);
         linkDto.setLongUrl(longUrl);
 
-        Mockito.doNothing().when(linkService).deleteByShortUrl(shortUrl);
+        doNothing().when(linkService).deleteByShortUrl(shortUrl);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/link/{shortLink}", shortUrl)
                         .with(csrf()))
