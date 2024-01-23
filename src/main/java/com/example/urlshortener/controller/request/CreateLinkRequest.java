@@ -15,6 +15,4 @@ public class CreateLinkRequest {
     @NotBlank
     @Size(max = 2048)
     private String longUrl;
-    @NotBlank
-    private LocalDateTime expiredAt;
 }

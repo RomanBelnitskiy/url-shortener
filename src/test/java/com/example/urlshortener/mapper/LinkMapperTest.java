@@ -68,7 +68,6 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         CreateLinkRequest request = new CreateLinkRequest();
-        request.setExpiredAt(time);
         request.setLongUrl("test");
         LinkDto actual = mapper.toDto(request);
 
