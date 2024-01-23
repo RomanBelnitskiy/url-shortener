@@ -36,7 +36,7 @@ class AuthControllerTest {
 
     @Test
     @DisplayName("Should register user and return token")
-    public void registerUser_AndReturnToken() throws Exception {
+    void registerUser_AndReturnToken() throws Exception {
         RegisterRequest request = new RegisterRequest("aaa123", "testPass");
         AuthResponse authResponse = new AuthResponse("mocked-jwt-token");
 
