@@ -9,6 +9,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 @RequiredArgsConstructor
 public class CustomRemovalListener implements RemovalListener<Object, Object> {
@@ -24,7 +28,7 @@ public class CustomRemovalListener implements RemovalListener<Object, Object> {
 
         String shortUrl = (String) key;
         Cache transitionsCache = cacheManager.getCache("transitions");
-        Long transitions = transitionsCache.get(shortUrl, Long.class);
+        Long transitions = requireNonNull(transitionsCache).get(shortUrl, Long.class);
 
         if (transitions != null) {
             linkService.updateTransitions(shortUrl, transitions);

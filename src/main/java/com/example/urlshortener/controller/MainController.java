@@ -35,7 +35,9 @@ public class MainController {
                 updateTransitions(shortUrl);
                 return new RedirectView(link.getLongUrl());
             }
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+            log.info(e.getLocalizedMessage());
+        }
 
         LinkDto linkDto = linkService.getByShortUrlAndIncreaseTransitions(shortUrl);
 
@@ -49,7 +51,7 @@ public class MainController {
 
     private void updateTransitions(String shortUrl) {
         Cache transitionsCache = cacheManager.getCache("transitions");
-        Long transitions = transitionsCache.get(shortUrl, Long.class);
+        Long transitions = requireNonNull(transitionsCache).get(shortUrl, Long.class);
         if (transitions != null) {
             transitions++;
             transitionsCache.put(shortUrl, transitions);

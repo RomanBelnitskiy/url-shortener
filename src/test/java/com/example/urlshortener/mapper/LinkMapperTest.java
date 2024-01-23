@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LinkMapperTest {
-    private LinkMapper mapper = new LinkMapper();
+    private final LinkMapper mapper = new LinkMapper();
 
     @Test
     void fromEntityToDto() {
