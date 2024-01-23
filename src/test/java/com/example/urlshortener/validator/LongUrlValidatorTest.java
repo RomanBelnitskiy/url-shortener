@@ -36,10 +36,19 @@ class LongUrlValidatorTest {
         assertTrue(result);
     }
 
+    @Test
+    @DisplayName("When long link is null then return false")
+    void whenLongLinkIsNull_ThenReturnFalse() {
+        boolean result = validator.validate(null);
+
+        assertFalse(result);
+    }
+
     @ParameterizedTest
     @DisplayName("When long link is not valid URL then return false")
     @ValueSource(strings = {
-            "ABcd8822",
+            "#ABcd8822",
+            "ABcd8822^",
             "https://github1.com/RomanBelnitskiy/url-shortener"
     })
     void whenLongLinkIsNotValidURL_ThenReturnFalse(String longUrl) {
@@ -47,5 +56,4 @@ class LongUrlValidatorTest {
 
         assertFalse(result);
     }
-
 }
