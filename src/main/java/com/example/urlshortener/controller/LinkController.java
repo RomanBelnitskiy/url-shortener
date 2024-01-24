@@ -40,7 +40,7 @@ public class LinkController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<LinkResponse>> getAllActiveUrl(@RequestAttribute Long userId){
+    public ResponseEntity<List<LinkResponse>> getAllActiveLinks(@RequestAttribute Long userId){
         return ResponseEntity.ok(
                 linkMapper.toResponses(
                         linkService.findAllActiveUrl(userId)
