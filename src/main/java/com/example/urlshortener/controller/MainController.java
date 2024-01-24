@@ -39,7 +39,7 @@ public class MainController {
         try {
             LinkDto link = attemptGetLinkFromCache(shortUrl);
             if (link != null) {
-                updateTransitions(shortUrl);
+                linkService.updateTransitions(shortUrl);
                 return new RedirectView(link.getLongUrl());
             }
         } catch (NullPointerException e) {
@@ -54,17 +54,6 @@ public class MainController {
     private LinkDto attemptGetLinkFromCache(String shortUrl) {
         Cache linksCache = cacheManager.getCache("links");
         return requireNonNull(linksCache).get(shortUrl, LinkDto.class);
-    }
-
-    private void updateTransitions(String shortUrl) {
-        Cache transitionsCache = cacheManager.getCache("transitions");
-        Long transitions = requireNonNull(transitionsCache).get(shortUrl, Long.class);
-        if (transitions != null) {
-            transitions++;
-            transitionsCache.put(shortUrl, transitions);
-        } else {
-            transitionsCache.put(shortUrl, 1L);
-        }
     }
 
     @ExceptionHandler(LinkNotFoundException.class)

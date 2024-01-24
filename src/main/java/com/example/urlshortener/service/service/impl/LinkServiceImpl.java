@@ -134,11 +134,8 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
-    public void updateTransitions(String shortUrl, Long additionalTransitions) {
-        validateShortUrl(shortUrl);
-        if (additionalTransitions == null || additionalTransitions <= 0) return;
-
-        linkRepository.increaseTransitionsBy(shortUrl, additionalTransitions);
+    public void updateTransitions(String shortUrl) {
+        linkRepository.increaseTransitions(shortUrl);
     }
 
     private void validateShortUrl(String shortUrl) {
