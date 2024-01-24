@@ -1,6 +1,7 @@
 package com.example.urlshortener.controller;
 
 import com.example.urlshortener.exception.LinkNotFoundException;
+import com.example.urlshortener.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> generalException() {
         return new ResponseEntity<>(getErrorMap("Bad request. Try again!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> userAlreadyExistsException(UserAlreadyExistsException ex) {
+        return new ResponseEntity<>(getErrorMap(ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     private static Map<String, String> getErrorMap(String errorMessage) {

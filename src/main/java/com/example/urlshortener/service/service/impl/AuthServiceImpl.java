@@ -6,6 +6,7 @@ import com.example.urlshortener.controller.response.auth.AuthResponse;
 import com.example.urlshortener.data.entity.UserEntity;
 import com.example.urlshortener.data.entity.UserRole;
 import com.example.urlshortener.data.repository.UserRepository;
+import com.example.urlshortener.exception.UserAlreadyExistsException;
 import com.example.urlshortener.service.service.AuthService;
 import com.example.urlshortener.service.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse register(RegisterRequest request) {
+        if (repository.findByUsername(request.getUsername()).isPresent()) {
+            throw new UserAlreadyExistsException(request.getUsername());
+        }
+
         UserEntity user = UserEntity.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
