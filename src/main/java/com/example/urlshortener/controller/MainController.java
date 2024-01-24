@@ -36,14 +36,10 @@ public class MainController {
             throw new IllegalArgumentException("Invalid short url");
         }
 
-        try {
-            LinkDto link = attemptGetLinkFromCache(shortUrl);
-            if (link != null) {
-                linkService.updateTransitions(shortUrl);
-                return new RedirectView(link.getLongUrl());
-            }
-        } catch (NullPointerException e) {
-            log.info(e.getLocalizedMessage());
+        LinkDto link = attemptGetLinkFromCache(shortUrl);
+        if (link != null) {
+            linkService.updateTransitions(shortUrl);
+            return new RedirectView(link.getLongUrl());
         }
 
         LinkDto linkDto = linkService.getByShortUrlAndIncreaseTransitions(shortUrl);

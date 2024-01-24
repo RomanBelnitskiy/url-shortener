@@ -21,8 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,6 +64,29 @@ class MainControllerTest {
         mockMvc.perform(get("/{shortUrl}", shortUrl))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(longUrl));
+    }
+
+    @Test
+    @DisplayName("When short url is present in cache then does not call linkService")
+    void redirect_DoesNotCallLinkService_WhenShortUrlIsPresentInCache() throws Exception {
+        String shortUrl = "abcd1234";
+        String longUrl = "http://example.com";
+
+        LinkDto linkDto = new LinkDto();
+        linkDto.setShortUrl(shortUrl);
+        linkDto.setLongUrl(longUrl);
+        linkDto.setCreatedAt(LocalDateTime.now());
+        linkDto.setExpiredAt(LocalDateTime.now().plusMonths(1));
+
+        when(validator.validate(shortUrl)).thenReturn(true);
+        when(cacheManager.getCache("links")).thenReturn(cache);
+        when(cache.get(shortUrl, LinkDto.class)).thenReturn(linkDto);
+
+        mockMvc.perform(get("/{shortUrl}", shortUrl))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(longUrl));
+
+        verify(linkService, never()).getByShortUrlAndIncreaseTransitions(anyString());
     }
 
     @Test
