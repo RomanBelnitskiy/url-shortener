@@ -11,5 +11,5 @@ public interface LinkService {
     void update(LinkDto dto, Long userId);
     LinkDto getByShortUrl(String shortUrl, Long userId);
     LinkDto getByShortUrlAndIncreaseTransitions(String shortUrl);
-    void updateTransitions(String shortUrl, Long transitions);
+    void updateTransitions(String shortUrl);
 }
