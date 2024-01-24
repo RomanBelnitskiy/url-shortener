@@ -5,6 +5,7 @@ import com.example.urlshortener.controller.request.UpdateLinkRequest;
 import com.example.urlshortener.controller.response.LinkResponse;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.service.dto.LinkDto;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -14,13 +15,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class LinkMapperTest {
     private final LinkMapper mapper = new LinkMapper();
 
+    static String url;
+    static String host;
+
+    @BeforeAll
+    static void staticInit() {
+        url = "test";
+        host = "test";
+    }
+
     @Test
     void fromEntityToDto() {
         LocalDateTime time = LocalDateTime.now();
 
         LinkEntity entity = LinkEntity.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -28,8 +38,8 @@ class LinkMapperTest {
         LinkDto actual = mapper.toDto(entity);
 
         LinkDto expected = LinkDto.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -43,8 +53,8 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         LinkDto dto = LinkDto.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -53,8 +63,8 @@ class LinkMapperTest {
         LinkEntity actual = mapper.toEntity(dto);
 
         LinkEntity expected = LinkEntity.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -68,17 +78,17 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         CreateLinkRequest request = new CreateLinkRequest();
-        request.setLongUrl("test");
+        request.setLongUrl(url);
         LinkDto actual = mapper.toDto(request);
 
-        actual.setShortUrl("test");
+        actual.setShortUrl(url);
         actual.setCreatedAt(time);
         actual.setExpiredAt(time);
         actual.setTransitions(0);
 
         LinkDto expected = LinkDto.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
@@ -93,13 +103,13 @@ class LinkMapperTest {
 
         UpdateLinkRequest request = new UpdateLinkRequest();
         request.setExpiredAt(time);
-        request.setLongUrl("test");
+        request.setLongUrl(url);
 
-        LinkDto actual = mapper.toDto("test", request);
+        LinkDto actual = mapper.toDto(url, request);
 
         LinkDto expected = LinkDto.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .expiredAt(time)
                 .build();
 
@@ -111,17 +121,18 @@ class LinkMapperTest {
         LocalDateTime time = LocalDateTime.now();
 
         LinkDto dto = LinkDto.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0)
                 .build();
 
-        LinkResponse actual = mapper.toResponse(dto);
+        LinkResponse actual = mapper.toResponse(dto, host);
         LinkResponse expected = LinkResponse.builder()
-                .shortUrl("test")
-                .longUrl("test")
+                .fullShortUrl(host + "/" + url)
+                .shortUrl(url)
+                .longUrl(url)
                 .createdAt(time)
                 .expiredAt(time)
                 .transitions(0L)

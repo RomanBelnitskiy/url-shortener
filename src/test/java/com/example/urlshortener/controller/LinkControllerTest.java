@@ -9,6 +9,7 @@ import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,13 @@ class LinkControllerTest {
 
     final ObjectMapper objectMapper = new ObjectMapper();
 
+    static String host;
+
+    @BeforeAll
+    static void staticInit() {
+        host = "test";
+    }
+
     @BeforeEach
     void init() {
         objectMapper.registerModule(new JavaTimeModule());
@@ -66,7 +74,7 @@ class LinkControllerTest {
         List<LinkResponse> linkResponses = getLinkResponses();
 
         when(linkService.findAll(1L)).thenReturn(linkDtos);
-        when(linkMapper.toResponses(linkDtos)).thenReturn(linkResponses);
+        when(linkMapper.toResponses(any(), any())).thenReturn(linkResponses);
 
         mockMvc.perform(get("/api/v1/link")
                         .with(csrf()).requestAttr("userId", 1L))
@@ -90,7 +98,7 @@ class LinkControllerTest {
         linkResponse.setLongUrl(longUrl);
 
         when(linkService.getByShortUrl(shortUrl, 1L)).thenReturn(linkDto);
-        when(linkMapper.toResponse(linkDto)).thenReturn(linkResponse);
+        when(linkMapper.toResponse(any(), any())).thenReturn(linkResponse);
 
         mockMvc.perform(get("/api/v1/link/{shortLink}", shortUrl)
                         .with(csrf()).requestAttr("userId", 1L))
@@ -112,10 +120,11 @@ class LinkControllerTest {
         createLinkRequest.setLongUrl("http://example.com");
 
         LinkResponse linkResponse = new LinkResponse();
+        linkResponse.setFullShortUrl(host + "/" + "qwertyui");
         linkResponse.setShortUrl("qwertyui");
         linkResponse.setLongUrl("http://example222.com");
 
-        when(linkMapper.toResponse(any())).thenReturn(linkResponse);
+        when(linkMapper.toResponse(any(), any())).thenReturn(linkResponse);
 
         mockMvc.perform(post("/api/v1/link")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -125,6 +134,7 @@ class LinkControllerTest {
                         .requestAttr("userId", 1L))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.fullShortUrl").value(linkResponse.getFullShortUrl()))
                 .andExpect(jsonPath("$.shortUrl").value(linkResponse.getShortUrl()))
                 .andExpect(jsonPath("$.longUrl").value(linkResponse.getLongUrl()));
     }
@@ -189,13 +199,15 @@ class LinkControllerTest {
     }
 
     public List<LinkResponse> getLinkResponses() {
-        LinkResponse linkResponse = new LinkResponse("example",
+        LinkResponse linkResponse = new LinkResponse(host,
+                "example",
                 "http://exemple.com",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(4),
                 0L);
 
-        LinkResponse linkResponse1 = new LinkResponse("example2",
+        LinkResponse linkResponse1 = new LinkResponse(host,
+                "example2",
                 "http://exempleSecond.com",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(4),

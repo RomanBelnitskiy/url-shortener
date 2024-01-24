@@ -8,6 +8,7 @@ import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class LinkController {
     public ResponseEntity<List<LinkResponse>> getAllLink(@RequestAttribute Long userId) {
         return ResponseEntity.ok(
                 linkMapper.toResponses(
-                        linkService.findAll(userId)
+                        linkService.findAll(userId), getHost()
                 ));
     }
 
@@ -36,14 +37,14 @@ public class LinkController {
             @RequestAttribute Long userId
     ) {
         LinkDto linkDto = linkService.getByShortUrl(shortUrl, userId);
-        return ResponseEntity.ok(linkMapper.toResponse(linkDto));
+        return ResponseEntity.ok(linkMapper.toResponse(linkDto, getHost()));
     }
 
     @GetMapping("/active")
     public ResponseEntity<List<LinkResponse>> getAllActiveLinks(@RequestAttribute Long userId){
         return ResponseEntity.ok(
                 linkMapper.toResponses(
-                        linkService.findAllActiveLinks(userId)
+                        linkService.findAllActiveLinks(userId), getHost()
                 ));
     }
 
@@ -53,7 +54,7 @@ public class LinkController {
             @RequestAttribute Long userId
     ) {
         LinkDto linkDto = linkMapper.toDto(linkRequest);
-        LinkResponse linkResponse = linkMapper.toResponse(linkService.create(linkDto, userId));
+        LinkResponse linkResponse = linkMapper.toResponse(linkService.create(linkDto, userId), getHost());
         return ResponseEntity.ok(linkResponse);
     }
 
@@ -73,5 +74,9 @@ public class LinkController {
             @RequestAttribute Long userId
     ) {
         linkService.deleteByShortUrl(shortUrl, userId);
+    }
+
+    private String getHost() {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
     }
 }
