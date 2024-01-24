@@ -3,6 +3,7 @@ package com.example.urlshortener.service.service.impl;
 import com.example.urlshortener.controller.request.RegisterRequest;
 import com.example.urlshortener.controller.request.auth.AuthRequest;
 import com.example.urlshortener.controller.response.auth.AuthResponse;
+import com.example.urlshortener.data.entity.UserDetailsImpl;
 import com.example.urlshortener.data.entity.UserEntity;
 import com.example.urlshortener.data.entity.UserRole;
 import com.example.urlshortener.data.repository.UserRepository;
@@ -16,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,7 +44,8 @@ public class AuthServiceImpl implements AuthService {
 
         repository.save(user);
 
-        String jwtToken = jwtService.generateToken(Map.of("userId", user.getId()), user);
+        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+        String jwtToken = jwtService.generateToken(Map.of("userId", userDetails.getId()), userDetails);
 
         return new AuthResponse(jwtToken);
     }
@@ -55,8 +56,8 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        UserEntity user = (UserEntity) authentication.getPrincipal();
-        String jwtToken = jwtService.generateToken(Map.of("userId", user.getId()), user);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String jwtToken = jwtService.generateToken(Map.of("userId", userDetails.getId()), userDetails);
 
         return new AuthResponse(jwtToken);
     }
