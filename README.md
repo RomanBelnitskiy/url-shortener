@@ -18,3 +18,6 @@
 >  Also, add a VM launch parameter -Dspring.profiles.active=prod as shown at image below.
 >  
 > ![VM option](https://github.com/RomanBelnitskiy/url-shortener/blob/props/src/main/resources/images/prod-conf.png "VM option")
+
+>### Swagger UI
+> Our project uses Swagger UI. It is available at the link: http://**host**:9999/swagger-ui/index.html
