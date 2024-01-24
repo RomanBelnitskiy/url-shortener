@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = UserEntity.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(String.valueOf(UserRole.USER))
+                .role(UserRole.USER)
                 .build();
 
         Optional<UserEntity> optionalUser = repository.findByUsername(user.getUsername());
