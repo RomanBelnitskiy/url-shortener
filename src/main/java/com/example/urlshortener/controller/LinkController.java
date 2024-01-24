@@ -39,6 +39,14 @@ public class LinkController {
         return ResponseEntity.ok(linkMapper.toResponse(linkDto));
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<LinkResponse>> getAllActiveUrl(@RequestAttribute Long userId){
+        return ResponseEntity.ok(
+                linkMapper.toResponses(
+                        linkService.findAllActiveUrl(userId)
+                ));
+    }
+
     @PostMapping
     public ResponseEntity<LinkResponse> createLink(
             @RequestBody CreateLinkRequest linkRequest,
