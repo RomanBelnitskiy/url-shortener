@@ -206,26 +206,46 @@ class LinkServiceTest {
         assertEquals(newExpiredAt, originalEntity.getExpiredAt());
     }
 
-    @Test
-    @DisplayName("Should delete link by valid id")
-    void shouldDeleteLinkByValidIdTest() {
-        String validShortUrl = "abc123";
+    @Nested
+    @DisplayName("deleteByShortUrl tests")
+    class DeleteByShortUrlTests {
+        @Test
+        @DisplayName("Should delete link by valid id")
+        void shouldDeleteLinkByValidIdTest() {
+            String validShortUrl = "abc123";
 
-        when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
-        service.deleteByShortUrl(validShortUrl, 1L);
+            when(shortUrlValidator.validate(validShortUrl)).thenReturn(true);
+            when(repository.existsByShortUrl(validShortUrl)).thenReturn(true);
 
-        verify(repository, times(1)).deleteByShortUrl(validShortUrl, 1L);
-    }
+            service.deleteByShortUrl(validShortUrl, 1L);
 
-    @Test
-    @DisplayName("Should throw IllegalArgumentException for invalid id when deleteById")
-    void shouldThrowExceptionForInvalidIdTest() {
-        String invalidShortUrl = "bbb5555";
+            verify(repository, times(1)).deleteByShortUrl(validShortUrl, 1L);
+        }
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> service.deleteByShortUrl(invalidShortUrl, 1L)
-        );
+        @Test
+        @DisplayName("Should throw IllegalArgumentException for invalid id when deleteById")
+        void shouldThrowExceptionForInvalidIdTest() {
+            String invalidShortUrl = "bbb5555";
+
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> service.deleteByShortUrl(invalidShortUrl, 1L)
+            );
+        }
+
+        @Test
+        @DisplayName("Should throw LinkNotFoundException when link is absent")
+        void shouldThrowLinkNotFoundException_WhenLinkIsAbsent() {
+            String shortUrl = "bbbb5555";
+
+            when(shortUrlValidator.validate(shortUrl)).thenReturn(true);
+            when(repository.existsByShortUrl(shortUrl)).thenReturn(false);
+
+            assertThrows(
+                    LinkNotFoundException.class,
+                    () -> service.deleteByShortUrl(shortUrl, 1L)
+            );
+        }
     }
 
     @Test

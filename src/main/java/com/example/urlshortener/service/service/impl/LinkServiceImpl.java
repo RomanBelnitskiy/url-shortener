@@ -79,6 +79,9 @@ public class LinkServiceImpl implements LinkService {
     @CacheEvict(key = "#shortUrl")
     public void deleteByShortUrl(String shortUrl, Long userId) {
         validateShortUrl(shortUrl);
+        if (!linkRepository.existsByShortUrl(shortUrl)) {
+            throw new LinkNotFoundException();
+        }
 
         linkRepository.deleteByShortUrl(shortUrl, userId);
     }
