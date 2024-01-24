@@ -35,7 +35,7 @@ public class LongUrlValidator {
             HttpRequest request = HttpRequest.newBuilder()
                     .version(HttpClient.Version.HTTP_1_1)
                     .method("HEAD", HttpRequest.BodyPublishers.noBody())
-                    .timeout(Duration.ofMillis(1500))
+                    .timeout(Duration.ofMillis(3000))
                     .uri(uri)
                     .headers("Accept", "*/*", "Accept-Encoding", "gzip, deflate, br")
                     .build();

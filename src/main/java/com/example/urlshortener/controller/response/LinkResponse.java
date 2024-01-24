@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LinkResponse {
+    private String fullShortUrl;
     private String shortUrl;
     private String longUrl;
     private LocalDateTime createdAt;
