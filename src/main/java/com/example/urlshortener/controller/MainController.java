@@ -4,6 +4,7 @@ import com.example.urlshortener.exception.LinkExpiredException;
 import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
+import com.example.urlshortener.validator.ShortUrlValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -25,10 +26,16 @@ public class MainController {
     @Autowired
     private LinkService linkService;
     @Autowired
+    private ShortUrlValidator shortUrlValidator;
+    @Autowired
     private CacheManager cacheManager;
 
     @GetMapping("/{shortUrl}")
     public RedirectView redirect(@PathVariable String shortUrl) {
+        if (!shortUrlValidator.validate(shortUrl)) {
+            throw new IllegalArgumentException("Invalid short url");
+        }
+
         try {
             LinkDto link = attemptGetLinkFromCache(shortUrl);
             if (link != null) {

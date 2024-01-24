@@ -1,13 +1,13 @@
 INSERT INTO link (short_url, original_url, created_at, expired_at, visit_count)
 VALUES
-  ('chat.gpt', 'https://chat.openai.com/', '2020-08-17 08:56:29', '2024-03-24 21:03:08', 7268),
+  ('chat0gpt', 'https://chat.openai.com/', '2020-08-17 08:56:29', '2024-03-24 21:03:08', 7268),
   ('freehost', 'https://render.com/', '2020-01-04 22:05:00', '2022-08-25 06:58:44', 1396),
   ('shorturl', 'https://github.com/RomanBelnitskiy/url-shortener', '2022-11-22 10:48:23', '2024-03-19 17:08:07', 8564),
   ('expired0', 'http://bbc.co.uk/en-ca?q=4', '2016-08-13 01:47:51', '2020-09-26 13:43:59', 7320),
   ('portwiki', 'https://uk.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80%D1%96%D0%B2_%D0%BF%D0%BE%D1%80%D1%82%D1%96%D0%B2_TCP_%D1%82%D0%B0_UDP', '2023-01-11 05:42:44', '2025-01-04 21:39:31', 8374),
   ('jwtswiki', 'https://uk.wikipedia.org/wiki/JSON_Web_Token', '2022-08-14 18:18:35', '2024-09-15 06:02:18', 3682),
   ('jwtdebug', 'https://jwt.io/#debugger-io', '2019-11-14 17:15:13', '2024-05-03 05:48:22', 3066),
-  ('goit.lms', 'https://www.edu.goit.global/uk/learn/8016429/7062328/7062403/training', '2022-11-26 20:32:17', '2024-11-18 19:38:15', 7627),
+  ('goit0lms', 'https://www.edu.goit.global/uk/learn/8016429/7062328/7062403/training', '2022-11-26 20:32:17', '2024-11-18 19:38:15', 7627),
   ('security', 'https://www.bezkoder.com/spring-boot-security-postgresql-jwt-authentication/', '2017-08-17 02:49:37', '2026-02-17 01:25:27', 8814),
   ('dcompose', 'https://www.bezkoder.com/docker-compose-spring-boot-postgres/', '2017-07-31 07:02:12', '2024-03-28 02:57:14', 1402),
   ('jdprojec', 'https://docs.google.com/document/d/1CmvPkcy-fo49BqlTwnC_iYBhj5KSmItM2V9Ps6lLtnI/edit', '2022-02-17 05:30:59', '2026-01-13 01:52:38', 5402),
