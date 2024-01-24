@@ -60,7 +60,7 @@ class AuthServiceTest {
         assertNotNull(authResponse);
         assertEquals("jwtToken", authResponse.getToken());
         verify(passwordEncoder, times(1)).encode("password");
-        verify(userRepository, times(2)).findByUsername("username");
+        verify(userRepository, times(1)).findByUsername("username");
         verify(userRepository, times(1)).save(any(UserEntity.class));
         verify(jwtService, times(1)).generateToken(anyMap(), any(UserDetailsImpl.class));
     }
