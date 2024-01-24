@@ -113,8 +113,6 @@ public class LinkServiceImpl implements LinkService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @Cacheable(key = "#shortUrl", unless = "#result == null")
     public LinkDto getByShortUrlAndIncreaseTransitions(String shortUrl) {
-        validateShortUrl(shortUrl);
-
         LinkEntity entity = linkRepository.findByShortUrl(shortUrl)
                 .orElseThrow(LinkNotFoundException::new);
 
