@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -96,5 +97,16 @@ class AuthServiceTest {
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtService, times(1))
                 .generateToken(anyMap(), any(UserDetailsImpl.class));
+    }
+
+    @Test
+    @DisplayName("Should throw BadCredentialsException")
+    void throwBadCredentialsExceptionTest() {
+        AuthRequest request = new AuthRequest("username", "password");
+
+        when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("username", "password")))
+                .thenThrow(BadCredentialsException.class);
+
+        assertThrows(BadCredentialsException.class, () -> authService.authenticate(request));
     }
 }
