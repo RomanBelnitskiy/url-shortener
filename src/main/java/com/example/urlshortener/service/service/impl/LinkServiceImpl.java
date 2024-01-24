@@ -46,9 +46,9 @@ public class LinkServiceImpl implements LinkService {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<LinkDto> findAllActiveUrl(Long userId){
+    public List<LinkDto> findAllActiveLinks(Long userId){
         return linkMapper.toDtos(
-                linkRepository.findByActiveUrl(userId)
+                linkRepository.findByActiveLinks(userId)
         );
     }
 

@@ -43,7 +43,7 @@ public class LinkController {
     public ResponseEntity<List<LinkResponse>> getAllActiveLinks(@RequestAttribute Long userId){
         return ResponseEntity.ok(
                 linkMapper.toResponses(
-                        linkService.findAllActiveUrl(userId)
+                        linkService.findAllActiveLinks(userId)
                 ));
     }
 

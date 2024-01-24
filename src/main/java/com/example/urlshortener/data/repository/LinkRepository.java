@@ -32,5 +32,5 @@ public interface LinkRepository extends JpaRepository<LinkEntity, String> {
     void deleteByShortUrl(String shortUrl, Long userId);
 
     @Query(value = "SELECT le FROM LinkEntity le WHERE le.expiredAt > CURRENT_TIMESTAMP AND le.user.id = :userId")
-    List<LinkEntity> findByActiveUrl(long userId);
+    List<LinkEntity> findByActiveLinks(long userId);
 }
