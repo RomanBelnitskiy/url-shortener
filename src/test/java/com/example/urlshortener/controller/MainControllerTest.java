@@ -5,6 +5,7 @@ import com.example.urlshortener.exception.LinkExpiredException;
 import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.service.dto.LinkDto;
 import com.example.urlshortener.service.service.LinkService;
+import com.example.urlshortener.validator.ShortUrlValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +38,8 @@ class MainControllerTest {
     @MockBean
     private LinkService linkService;
     @MockBean
+    private ShortUrlValidator validator;
+    @MockBean
     private CacheManager cacheManager;
     @MockBean
     private Cache cache;
@@ -56,6 +56,7 @@ class MainControllerTest {
         linkDto.setCreatedAt(LocalDateTime.now());
         linkDto.setExpiredAt(LocalDateTime.now().plusMonths(1));
 
+        when(validator.validate(shortUrl)).thenReturn(true);
         when(cacheManager.getCache("links")).thenReturn(cache);
         when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
 
@@ -71,11 +72,7 @@ class MainControllerTest {
     void redirect_ThrowsIllegalArgumentException_WhenShortLinkIsNotValid() throws Exception {
         String shortUrl = "abc123";
 
-        when(cacheManager.getCache("links")).thenReturn(cache);
-        when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
-
-        when(linkService.getByShortUrlAndIncreaseTransitions(shortUrl))
-                .thenThrow(new IllegalArgumentException("Invalid short url"));
+        when(validator.validate(shortUrl)).thenReturn(false);
 
         mockMvc.perform(get("/{shortUrl}", shortUrl))
                 .andExpect(status().is(400))
@@ -87,6 +84,7 @@ class MainControllerTest {
     void redirect_ThrowsLinkNotFoundException_WhenCanNotFindLink() throws Exception {
         String shortUrl = "abcd1234";
 
+        when(validator.validate(shortUrl)).thenReturn(true);
         when(cacheManager.getCache("links")).thenReturn(cache);
         when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
 
@@ -103,6 +101,7 @@ class MainControllerTest {
     void redirect_ThrowsLinkExpiredException_WhenLinkHasExpired() throws Exception {
         String shortUrl = "abcd1234";
 
+        when(validator.validate(shortUrl)).thenReturn(true);
         when(cacheManager.getCache("links")).thenReturn(cache);
         when(cache.get(shortUrl, LinkDto.class)).thenReturn(null);
 

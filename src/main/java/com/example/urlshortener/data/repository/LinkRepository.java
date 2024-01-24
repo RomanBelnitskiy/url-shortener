@@ -1,7 +1,6 @@
 package com.example.urlshortener.data.repository;
 
 import com.example.urlshortener.data.entity.LinkEntity;
-import com.example.urlshortener.service.dto.LinkDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,9 +20,9 @@ public interface LinkRepository extends JpaRepository<LinkEntity, String> {
     boolean existsByShortUrl(String shortUrl);
 
     @Modifying
-    @Query(value = "UPDATE link SET visit_count = visit_count + :transitions WHERE short_url = :shortUrl",
+    @Query(value = "UPDATE link SET visit_count = visit_count + 1 WHERE short_url = :shortUrl",
             nativeQuery = true)
-    void increaseTransitionsBy(@Param("shortUrl") String shortUrl, @Param("transitions") Long additionalTransitions);
+    void increaseTransitions(@Param("shortUrl") String shortUrl);
 
     @Query(value = "SELECT le FROM LinkEntity le WHERE le.user.id = :userId")
     List<LinkEntity> findAll(Long userId);
@@ -31,4 +30,7 @@ public interface LinkRepository extends JpaRepository<LinkEntity, String> {
     @Modifying
     @Query(value = "DELETE FROM link WHERE short_url = :shortUrl AND user_id = :userId", nativeQuery = true)
     void deleteByShortUrl(String shortUrl, Long userId);
+
+    @Query(value = "SELECT le FROM LinkEntity le WHERE le.expiredAt > CURRENT_TIMESTAMP AND le.user.id = :userId")
+    List<LinkEntity> findByActiveLinks(long userId);
 }

@@ -51,7 +51,7 @@ class LinkControllerTest {
     @MockBean
     LinkMapper linkMapper;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void init() {
@@ -110,7 +110,6 @@ class LinkControllerTest {
     void createLink() throws Exception {
         CreateLinkRequest createLinkRequest = new CreateLinkRequest();
         createLinkRequest.setLongUrl("http://example.com");
-        createLinkRequest.setExpiredAt(LocalDateTime.now());
 
         LinkResponse linkResponse = new LinkResponse();
         linkResponse.setShortUrl("qwertyui");

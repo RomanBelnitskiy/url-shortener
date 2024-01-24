@@ -44,6 +44,13 @@ public class LinkServiceImpl implements LinkService {
                 linkRepository.findAll(userId)
         );
     }
+    @Override
+    @Transactional(readOnly = true)
+    public List<LinkDto> findAllActiveLinks(Long userId){
+        return linkMapper.toDtos(
+                linkRepository.findByActiveLinks(userId)
+        );
+    }
 
     @Override
     @Transactional
@@ -113,8 +120,6 @@ public class LinkServiceImpl implements LinkService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @Cacheable(key = "#shortUrl", unless = "#result == null")
     public LinkDto getByShortUrlAndIncreaseTransitions(String shortUrl) {
-        validateShortUrl(shortUrl);
-
         LinkEntity entity = linkRepository.findByShortUrl(shortUrl)
                 .orElseThrow(LinkNotFoundException::new);
 
@@ -129,11 +134,8 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
-    public void updateTransitions(String shortUrl, Long additionalTransitions) {
-        validateShortUrl(shortUrl);
-        if (additionalTransitions == null || additionalTransitions <= 0) return;
-
-        linkRepository.increaseTransitionsBy(shortUrl, additionalTransitions);
+    public void updateTransitions(String shortUrl) {
+        linkRepository.increaseTransitions(shortUrl);
     }
 
     private void validateShortUrl(String shortUrl) {
