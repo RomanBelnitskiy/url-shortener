@@ -4,8 +4,8 @@ import com.example.urlshortener.controller.request.RegisterRequest;
 import com.example.urlshortener.controller.request.auth.AuthRequest;
 import com.example.urlshortener.controller.response.auth.AuthResponse;
 import com.example.urlshortener.data.entity.UserEntity;
-import com.example.urlshortener.data.entity.UserRole;
 import com.example.urlshortener.data.repository.UserRepository;
+import com.example.urlshortener.exception.UserAlreadyExistsException;
 import com.example.urlshortener.service.service.JwtService;
 import com.example.urlshortener.service.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,21 +59,19 @@ class AuthServiceTest {
         assertNotNull(authResponse);
         assertEquals("jwtToken", authResponse.getToken());
         verify(passwordEncoder, times(1)).encode("password");
-        verify(userRepository, times(1)).findByUsername("username");
+        verify(userRepository, times(2)).findByUsername("username");
         verify(userRepository, times(1)).save(any(UserEntity.class));
         verify(jwtService, times(1)).generateToken(anyMap(), any(UserEntity.class));
     }
 
     @Test
-    @DisplayName("Should trow UsernameNotFoundException")
-    void throwUsernameNotFoundExceptionTest() {
+    @DisplayName("Should throw UserAlreadyExistsException")
+    void throwUserAlreadyExistsExceptionTest() {
         RegisterRequest request = new RegisterRequest("username", "password");
 
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.findByUsername("username")).thenReturn(Optional.of(new UserEntity()));
 
-        assertThrows(UsernameNotFoundException.class, () -> authService.register(request));
-
+        assertThrows(UserAlreadyExistsException.class, () -> authService.register(request));
     }
 
     @Test
