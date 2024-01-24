@@ -3,6 +3,7 @@ package com.example.urlshortener.service;
 import com.example.urlshortener.controller.request.RegisterRequest;
 import com.example.urlshortener.controller.request.auth.AuthRequest;
 import com.example.urlshortener.controller.response.auth.AuthResponse;
+import com.example.urlshortener.data.entity.UserDetailsImpl;
 import com.example.urlshortener.data.entity.UserEntity;
 import com.example.urlshortener.data.repository.UserRepository;
 import com.example.urlshortener.exception.UserAlreadyExistsException;
@@ -52,7 +53,7 @@ class AuthServiceTest {
             user.setId(1L);
             return user;
         });
-        when(jwtService.generateToken(anyMap(), any(UserEntity.class))).thenReturn("jwtToken");
+        when(jwtService.generateToken(anyMap(), any(UserDetailsImpl.class))).thenReturn("jwtToken");
 
         AuthResponse authResponse = authService.register(request);
 
@@ -61,7 +62,7 @@ class AuthServiceTest {
         verify(passwordEncoder, times(1)).encode("password");
         verify(userRepository, times(2)).findByUsername("username");
         verify(userRepository, times(1)).save(any(UserEntity.class));
-        verify(jwtService, times(1)).generateToken(anyMap(), any(UserEntity.class));
+        verify(jwtService, times(1)).generateToken(anyMap(), any(UserDetailsImpl.class));
     }
 
     @Test
@@ -78,13 +79,13 @@ class AuthServiceTest {
     @DisplayName("Should authenticate user and return JWT token")
     void authenticateUserTest() {
         AuthRequest request = new AuthRequest("username", "password");
-        UserEntity user = new UserEntity();
-        user.setId(1L);
+        UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setId(1L);
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(user);
-        when(jwtService.generateToken(anyMap(), any(UserEntity.class))).thenReturn("jwtToken");
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(jwtService.generateToken(anyMap(), any(UserDetailsImpl.class))).thenReturn("jwtToken");
 
         AuthResponse authResponse = authService.authenticate(request);
 
@@ -94,6 +95,6 @@ class AuthServiceTest {
         verify(authenticationManager, times(1))
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtService, times(1))
-                .generateToken(anyMap(), any(UserEntity.class));
+                .generateToken(anyMap(), any(UserDetailsImpl.class));
     }
 }

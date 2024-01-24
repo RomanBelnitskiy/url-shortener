@@ -1,5 +1,6 @@
 package com.example.urlshortener.config;
 
+import com.example.urlshortener.data.entity.UserDetailsImpl;
 import com.example.urlshortener.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +21,8 @@ public class AppConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found.", username)));
+        return username -> UserDetailsImpl.build(userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found.", username))));
     }
 
     @Bean
