@@ -3,6 +3,7 @@ package com.example.urlshortener.service;
 import com.example.urlshortener.data.entity.LinkEntity;
 import com.example.urlshortener.data.repository.LinkRepository;
 import com.example.urlshortener.data.repository.UserRepository;
+import com.example.urlshortener.exception.LinkExpiredException;
 import com.example.urlshortener.exception.LinkNotFoundException;
 import com.example.urlshortener.mapper.LinkMapper;
 import com.example.urlshortener.service.dto.LinkDto;
@@ -12,6 +13,7 @@ import com.example.urlshortener.validator.LongUrlValidator;
 import com.example.urlshortener.validator.ShortUrlValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,6 +60,16 @@ class LinkServiceTest {
 
         service.findAll(1L);
         verify(repository, times(1)).findAll(1L);
+    }
+
+    @Test
+    @DisplayName("Should call repository.findByActiveLinks() one time")
+    void shouldCallRepositoryFindByActiveLinksOneTimeTest() {
+        when(repository.findByActiveLinks(1L)).thenReturn(Collections.emptyList());
+
+        service.findAllActiveLinks(1L);
+
+        verify(repository, times(1)).findByActiveLinks(1L);
     }
 
     @Test
@@ -251,6 +264,60 @@ class LinkServiceTest {
         verify(repository, never()).findByShortUrl(any());
     }
 
+    @Nested
+    @DisplayName("getByShortUrlAndIncreaseTransitions tests")
+    class GetByShortUrlAndIncreaseTransitionsTests {
+        @Test
+        @DisplayName("Should return LinkDto with increased transitions")
+        void shouldReturnLinkDtoWithIncreasedTransitions() {
+            LinkDto linkDto = createLinkDto("aaaabbbb", "https://www.google.com/");
+            long initTransitions = linkDto.getTransitions();
+
+            when(repository.findByShortUrl(linkDto.getShortUrl()))
+                    .thenReturn(Optional.of(mapDtoToEntity(linkDto)));
+
+            LinkDto resultDto = service.getByShortUrlAndIncreaseTransitions(linkDto.getShortUrl());
+
+            assertEquals(initTransitions + 1, resultDto.getTransitions());
+        }
+
+        @Test
+        @DisplayName("Should throws LinkNotFoundException")
+        void shouldThrowsLinkNotFoundException() {
+            LinkDto linkDto = createLinkDto("aaaabbbb", "https://www.google.com/");
+
+            when(repository.findByShortUrl(linkDto.getShortUrl()))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(
+                    LinkNotFoundException.class,
+                    () -> service.getByShortUrlAndIncreaseTransitions(linkDto.getShortUrl()));
+        }
+
+        @Test
+        @DisplayName("Should throws LinkExpiredException")
+        void shouldThrowsLinkExpiredException() {
+            LinkDto linkDto = createLinkDto("aaaabbbb", "https://www.google.com/");
+            linkDto.setExpiredAt(LocalDateTime.now().minusMonths(1));
+
+            when(repository.findByShortUrl(linkDto.getShortUrl()))
+                    .thenReturn(Optional.of(mapDtoToEntity(linkDto)));
+
+            assertThrows(
+                    LinkExpiredException.class,
+                    () -> service.getByShortUrlAndIncreaseTransitions(linkDto.getShortUrl()));
+        }
+    }
+
+    @Test
+    @DisplayName("Should call repository.increaseTransitions()")
+    void updateTransitions_CallIncreaseTransitions() {
+        String shortUrl = "aaaabbbb";
+
+        service.updateTransitions(shortUrl);
+
+        verify(repository, times(1)).increaseTransitions(shortUrl);
+    }
 
     private LinkDto createLinkDto(String shortUrl, String longUrl) {
         return LinkDto.builder()
@@ -269,6 +336,16 @@ class LinkServiceTest {
                 .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDateTime.now().plusMonths(1))
                 .transitions(0)
+                .build();
+    }
+
+    private LinkEntity mapDtoToEntity(LinkDto dto) {
+        return LinkEntity.builder()
+                .shortUrl(dto.getShortUrl())
+                .longUrl(dto.getLongUrl())
+                .createdAt(dto.getCreatedAt())
+                .expiredAt(dto.getExpiredAt())
+                .transitions(dto.getTransitions())
                 .build();
     }
 }
